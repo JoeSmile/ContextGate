@@ -131,86 +131,12 @@ CREATE INDEX idx_apr_tenant_status ON approval_requests(tenant_id, status);
 > 
 > 审批通过后，前端可通知用户重试或自动重试原请求。
 
-**修改:** `backend/app.py` — 注册 admin 路由 + streaming router
+**修改:** `backend/app.py` — 注册 admin 路由
 
-## Subtask 02.06: SSE Streaming 治理（快速补上）
-
-> 老代码有 SSE 但新 pipeline 没有。这是感知体验最重要的一个特性。
-
-**设计思路:**
-- 短路径（缓存/Skill）→ 直接返回，不需要 SSE
-- 长路径（LLM）→ SSE 逐 token 吐
-
-**改法:** `backend/pipeline/router.py` 增加 `POST /chat/streaming`
-
-```python
-@router.post("/chat/streaming")
-async def chat_streaming(
-    request: ChatRequest,
-    tenant: TenantContext = Depends(require_permission("chat:write")),
-):
-    # 1. 跑完 model_router 之前的所有节点（快，<50ms）
-    initial = PipelineState(tenant_id=tenant.tenant_id, ...)
-    pre_state = await compiled_graph.ainvoke_until(
-        initial, "model_router"
-    )
-
-    # 2. 短路径 → 直接返回，不 SSE
-    if pre_state["finish_reason"] in ("skill_executed", "cache_hit", "blocked"):
-        return JSONResponse({"response": pre_state["response"]})
-
-    # 3. 长路径 → SSE
-    async def event_stream():
-        async for token in llm_harness.stream(
-            model=pre_state["selected_model"],
-            messages=[{"role": "user", "content": pre_state["message"]}],
-            tenant_id=tenant.tenant_id,
-        ):
-            yield f"data: {json.dumps({'token': token})}\n\n"
-
-        # 流完后异步跑 write_memory + audit（不阻塞用户）
-        background_tasks.add_task(run_post_llm_nodes, pre_state)
-        yield "data: [DONE]\n\n"
-
-    return StreamingResponse(
-        event_stream(),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )
-```
-
-**Harness 加 streaming 支持（Subtask 07.07 追加）:**
-
-```python
-# backend/core/harness/llm.py — 追加
-class LLMHarness(Harness):
-    async def stream(self, model, messages, tenant_id, **kwargs) -> AsyncIterator[str]:
-        """SSE streaming 版本 — 边吐 token 边追踪"""
-        key = self._key_manager.get_active_key(model)
-        client = get_llm_client(key)
-
-        start = time.time()
-        tokens = []
-        async for chunk in client.astream(messages, model=model):
-            token = chunk.choices[0].delta.content or ""
-            tokens.append(token)
-            yield token
-
-        # 流完后追踪
-        latency = (time.time() - start) * 1000
-        text = "".join(tokens)
-        self._record_trace("llm", model, messages, text, latency)
-        record_consumption(tenant_id, calculate_cost(model, count_tokens(text)))
-```
-
-**验证:**
-```bash
-curl -N -X POST http://localhost:8000/chat/streaming \
-  -H "X-API-Key: $KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"message":"说说你的看法"}'
-# → 逐字输出，不是一次性返回
-```
+> **延期（不在 Task 02 / Batch 2 实现）:** SSE Streaming 治理已拆到后续任务：
+> - `POST /chat/streaming` 管线转接 → **Task 04.11** / `batch-04`
+> - `LLMHarness.stream()` → **Task 07.07e** / `batch-05b`
+> - 流式 abort / retraction（正则）→ **Task 09.04** / `batch-05a`
 
 ## Subtask 02.06: 请求签名认证（防重放）
 

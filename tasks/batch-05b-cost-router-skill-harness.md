@@ -809,6 +809,14 @@ from backend.pipeline.state import PipelineState
 
 ---
 
+## 07.07e: `LLMHarness.stream()`（从 Task 02 延期）
+
+> 供 Batch 4 的 `POST /chat/streaming`（04.11）使用。完整说明见 `tasks/07-cost-modelrouter-skill.md` → 07.07e。
+
+在 `backend/core/harness/llm.py` 的 `LLMHarness` 上追加 `async def stream(...) -> AsyncIterator[str]`：边 `astream` 边 yield token，流结束后记 cost / LangFuse（与 `generate` 对齐）。
+
+---
+
 ## 注册到 app.py
 
 **修改: `backend/app.py`**

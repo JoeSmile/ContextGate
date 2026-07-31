@@ -16,9 +16,9 @@ Batch 1  →  Batch 2  →  Batch 3  →  Batch 4  →  Batch 5a + 5b (可并行
 | 1 | `tasks/batch-01-rebranding-pgvector.md` | 00+01 | 10 | 40-60min |
 | 2 | `tasks/batch-02-auth-rbac-signature.md` | 02 | 6 | 30-50min |
 | 3 | `tasks/batch-03-tenant-audit-health.md` | 03+12 | 7 | 20-35min |
-| 4 | `tasks/batch-04-langgraph-pipeline.md` | 04 | 10 | **60-90min** ⚠️ 最大 |
-| 5a | `tasks/batch-05a-observability-cache-guardrails.md` | 05+06+09+10+11 | 14 | 40-60min |
-| 5b | `tasks/batch-05b-cost-router-skill-harness.md` | 07 | 7 | 50-70min |
+| 4 | `tasks/batch-04-langgraph-pipeline.md` | 04 | 11（含延期 SSE 04.11） | **60-90min** ⚠️ 最大 |
+| 5a | `tasks/batch-05a-observability-cache-guardrails.md` | 05+06+09+10+11 | 15（含流式 abort 09.04） | 40-60min |
+| 5b | `tasks/batch-05b-cost-router-skill-harness.md` | 07 | 7+（含 stream 07.07e） | 50-70min |
 | 6 | `tasks/batch-06-deps-seed-mock.md` | 08+13 | 4 | 15-25min |
 | 7 | `tasks/batch-07-docker-cicd-production.md` | 14+15+16 | 9 | 25-35min |
 | 8 | `tasks/batch-08-ownership-key-governance.md` | 17+18 | 14 | 50-70min |

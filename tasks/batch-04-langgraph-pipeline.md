@@ -991,6 +991,19 @@ async def chat_pipeline(
 
 ---
 
+## 04.11: SSE Streaming 入口（从 Task 02 延期）
+
+> **依赖:** 04.09；逐 token 需 **07.07e**；abort/retraction 需 **09.04**。本步只加路由骨架。
+> 完整说明见 `tasks/04-langgraph-pipeline.md` → Subtask 04.11。
+
+在 `backend/pipeline/router.py` 增加 `POST /chat/streaming`：
+- 短路径（cache/skill/blocked）→ `JSONResponse`
+- 长路径 → `StreamingResponse` + `llm_harness.stream(...)`（实现在 Batch 5b）
+
+验证 curl 见 Task 04.11；若 07.07e 未合入，可先 stub 假 token 流打通协议。
+
+---
+
 ## 注册到 app.py
 
 ### 修改: `backend/app.py`

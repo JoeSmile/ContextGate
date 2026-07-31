@@ -4,6 +4,9 @@
 > **预估:** 30-50 分钟  
 > **依赖:** Batch 1 (pgvector 模型 + ApiKey 表已定义)  
 > **Commit:** `git add -A && git commit -m "feat: auth + RBAC0 + request signature\n\nSigned-off-by: Joe"`
+>
+> **不在本 Batch:** SSE `/chat/streaming`、Harness.stream、流式 abort/retraction  
+> → 已拆到 **04.11 / 07.07e / 09.04**（见 `tasks/02-auth-rbac.md` 延期说明）
 
 ---
 

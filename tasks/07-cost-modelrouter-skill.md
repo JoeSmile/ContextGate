@@ -473,6 +473,32 @@ BaseSkill.execute()          ← 安全壳：二级权限 + 人工介入
        └─ Harness.wrap()     ← 可观测壳：断路器 / 重试 / 计时 / 审计
 ```
 
+### 07.07e: `LLMHarness.stream()`（从 Task 02 延期，供 04.11 SSE）
+
+```python
+# backend/core/harness/llm.py — 追加
+async def stream(
+    self, model, messages, tenant_id, **kwargs
+) -> AsyncIterator[str]:
+    """SSE streaming — 边吐 token 边追踪"""
+    client = try_create_chat_openai(model=model)
+    start = time.time()
+    tokens: list[str] = []
+    async for chunk in client.astream(messages):
+        token = getattr(chunk, "content", None) or ""
+        if not token:
+            continue
+        tokens.append(token)
+        yield token
+
+    latency = (time.time() - start) * 1000
+    text = "".join(tokens)
+    # 流完后记 cost / LangFuse（与 generate 对齐）
+    record_consumption(tenant_id, calculate_cost(model, count_tokens(text)))
+```
+
+> 路由侧 `POST /chat/streaming` 见 **04.11**；流式 abort/retraction 见 **09.04**。
+
 ### 验证
 
 ```bash

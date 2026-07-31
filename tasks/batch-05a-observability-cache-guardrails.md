@@ -774,6 +774,15 @@ async def llm_generate(state: PipelineState) -> PipelineState:
 
 ---
 
+## 09.04: 流式 abort / retraction（从 Task 02 延期）
+
+> **依赖:** Batch 4 的 `POST /chat/streaming`（04.11）+ 本 Batch 的 `DRIFT_PATTERNS` / 违规词库。
+> 完整代码见 `tasks/09-guardrails.md` → Subtask 09.04。
+
+在 streaming 循环中：逐 chunk 正则命中 → SSE `type: abort`；流结束长度超限 → `type: retraction`。前端处理见 Task 09.04。
+
+---
+
 ## 验证
 
 ```bash
