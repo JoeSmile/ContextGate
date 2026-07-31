@@ -3,8 +3,102 @@
 > **包含:** Task 03 (4 subtasks) + Task 12 (3 subtasks)  
 > **预估:** 20-35 分钟  
 > **依赖:** Batch 2 (auth + TenantContext)  
-> **⚠️ 03 + 12 无依赖可平行 — 但建议一起写，因为 error_handler 中间件和 audit 都涉及 app.py 注册**
+> **⚠️ 03 + 12 无依赖可平行 — 但建议一起写，因为 error_handler 中间件和 audit 都涉及 app.py 注册**  
+> **⚠️ 先做 Subtask 3.1 清理，再写 03/12 逻辑，避免误用被删的旧模块**  
 > **Commit:** `git add -A && git commit -m "feat: tenant isolation, audit logging, health check, error codes\n\nSigned-off-by: Joe"`
+
+---
+
+## Subtask 3.1: 遗留代码清理（死代码移除）
+
+> **目的:** 移除 emotional_chat 遗留的、ContextGate 不会使用的代码，防止后续 Task 误引用旧模块。
+> **原则:** 只删确定的死代码；不确定的加 `# DEPRECATED` 保留。删完必须跑一遍 import 检查确认没破坏引用。
+
+### 3.1.1 整个目录删除（无争议）
+
+```bash
+# AB 测试 + Prompt 优化（emotional_chat 的私有实验）
+rm -rf Prompt优化测试/
+rm -rf backend/ab_testing/
+rm -rf backend/scripts/ab_test_analysis.py backend/scripts/ab_test_demo.py
+rm -rf backend/prompt_optimizer.py
+
+# 多模态（语音/图像/人脸识别，ContextGate 不需要）
+rm -rf backend/modules/multimodal/
+rm -rf backend/multimodal_services.py
+
+# Codex 相关（原作者的个人工具脚本）
+rm -rf scripts/build_codex_learning_map_xmind.py
+rm -rf scripts/build_codex_use_cases_xmind.py
+rm -rf scripts/extract_codex_pdf_outline.py
+
+# Hermes 工作区（抄 Nous Hermes 的临时功能，不属于 ContextGate）
+rm -rf backend/hermes/
+```
+
+### 3.1.2 情感/情绪相关文件（ContextGate 无情绪概念）
+
+```bash
+rm -rf backend/routers/emotion_analysis.py
+rm -rf backend/emotion_analyzer.py
+rm -rf backend/utils/sentiment_classifier.py
+rm -rf backend/config/emotion_strategy.yaml
+rm -rf backend/runtime/skills/emotion_skill.py
+rm -rf backend/services/emotion_trend_analyzer.py
+rm -rf backend/services/advanced_sentiment_analyzer.py
+rm -rf backend/services/sentiment_integration_example.py
+```
+
+### 3.1.3 旧数据库/向量遗留
+
+```bash
+rm -rf backend/vector_store.py          # 旧 ChromaDB 封装，已被 pgvector 替代
+rm -rf backend/memory_manager.py        # 旧记忆管理器，被 pipeline 替代（确认无引用后删）
+rm -rf backend/memory_extractor.py      # 同上
+rm -rf backend/context_assembler.py     # 旧上下文组装，被 pipeline/build_context 替代
+```
+
+> ⚠️ 3.1.3 删除前先确认无引用：
+> ```bash
+> grep -rln "vector_store\|memory_manager\|memory_extractor\|context_assembler" backend/ --include="*.py" | grep -v __pycache__
+> # 如果有引用，先改引用，再删文件
+> ```
+
+### 3.1.4 前端遗留
+
+```bash
+rm -rf frontend/src/App.js.backup        # 备份文件
+rm -rf frontend/src/constants/emotions.js  # 情绪常量（测试 UI 用不到）
+```
+
+> 其余 frontend 代码保留（开发期测试客户端，v1.0 发布时整体退役）。
+
+### 3.1.5 验证（必须通过）
+
+```bash
+# 1. 确认无 import 断裂
+cd /Users/guowei/Desktop/github/contextgate
+uv run python -c "
+import sys
+sys.path.insert(0, '.')
+# 冒烟：主模块能 import
+from backend.app import app
+print('✅ 后端 app import 成功')
+"
+
+# 2. 确认情感字眼清干净
+grep -r "心语\|情感陪伴" backend/ --include="*.py" | grep -v __pycache__ || echo "✅ 无情感残留"
+
+# 3. 确认死目录消失
+ls Prompt优化测试/ 2>/dev/null && echo "❌ 还在" || echo "✅ 已删除"
+ls backend/hermes/ 2>/dev/null && echo "❌ 还在" || echo "✅ 已删除"
+```
+
+### 3.1.6 同步修改引用
+
+如果 3.1.3 删除的文件在 `backend/app.py`、`backend/routers/__init__.py`、`config.py` 有 import：
+- 删除对应 import 行
+- 删除对应 try/except 降级逻辑（如 `EMOTION_ENABLED`、`HERMES_ROUTER_ENABLED`）
 
 ---
 
