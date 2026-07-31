@@ -24,8 +24,8 @@ uv sync              # 安装依赖
 uv lock              # 锁定依赖
 uv run python ...    # 运行脚本
 uv run pytest ...    # 跑测试
-uv run ruff check .  # lint
-uv run mypy backend/ # 类型检查
+uv run ruff check backend/ scripts/  # lint（与 CI 一致）
+uv run mypy          # 类型检查（pyproject files= 主路径门禁）
 ```
 
 ## 架构
