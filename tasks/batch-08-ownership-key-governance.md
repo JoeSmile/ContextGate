@@ -9,6 +9,102 @@
 
 ---
 
+## Subtask 8.1: 质量门禁收尾（必须最先做）
+
+> **目的:** 清理存量 lint/type 债务，让 CI 从"必红"变"全绿"。Batch 8 之后是发布，门禁必须过。
+> **现状（2026-07-31 Hermes 实测核实）:**
+> - ✅ Ruff 已收敛: `select=[E4,E7,E9,F,I,UP,B]`, `ignore=[E501,B008,B904,E402]`（pyproject.toml:135-147）→ `ruff check backend/ scripts/` **全绿**
+> - ✅ MyPy 只严查主路径: `files=[pipeline, skills, observability, core/auth, core/guardrails, core/harness, core/*.py]`（pyproject.toml:163-177）→ **50 files, no issues**
+> - ✅ plugins/ 已删，无 backend.plugins 残留引用（llm_with_plugins.py 已 stub，PluginManager 空实现）
+> - ✅ backend/main.py 已删，无引用（run_backend.py 用 backend.app:app）
+> - ✅ 8.1.5 缓存 key 实测带 tenant: `exact:{tenant_id}:{user_id}:{query_hash}` / `template:{tenant_id}:{fingerprint}`
+> - ⏳ **chat_service.py 待拍板** — 原文档保留理由有误（事实修正见 8.1.1），等 Joe 决策
+> - 📌 新发现见 8.1.7（不属本批门禁范围，记录待后续批次）
+
+### 8.1.1 删除 plugins 死代码 + chat_service 拍板
+
+```bash
+# ✅ plugins/ 已删。仅需确认无残留引用（llm_with_plugins.py 已 stub）
+grep -rln "backend.plugins\|from backend import plugins" backend/ --include="*.py" | grep -v __pycache__ || echo "✅ 无引用"
+```
+
+> ⏳ **chat_service.py — 已拍板: 选项 A 直接删（2026-07-31）**
+>
+> 原文档称"被 optional legacy router 引用（routers/__init__.py 的 try/except 导入）"，实测：
+> - routers/__init__.py 的 try/except 导入的是 rag_router + agent_router，**与 chat 无关**
+> - chat_router 由 routers/__init__.py:7 **无条件**导入；app.py:157 已注释 `# app.include_router(chat_router)  # DEPRECATED`，**从不挂载**
+> - 每次启动都会执行 chat.py:36 模块级 `chat_service = ChatService()`，拉入整条旧链（llm_with_plugins → personalization_service → xinyu_prompt）
+> - chat.py 唯一引用方是 routers/__init__.py:7；app.py:241 的 "ChatService" 只是 /system/info 展示字符串
+>
+> **✅ 已执行（选项 A）:**
+> 1. 删除: `backend/routers/chat.py` + `backend/services/chat_service.py` + `backend/services/chat_service_integration_example.py` + `backend/dependencies.py`（零引用方的 ServiceContainer，直接引用已删 ChatService）
+> 2. `routers/__init__.py`: 移除 chat_router import + __all__ 条目
+> 3. `app.py`: 移除 DEPRECATED 注释行；/system/info services_list 去掉 "ChatService"
+> 4. **连带修复**: `optimized_chat_service.py` 原为 `OptimizedChatService(ChatService)` 子类 — 实测父类属性从未被使用（self.llm_client/emotion_analyzer/safety_checker/memory_retriever 在整条继承链上都不存在），`super().__init__()` 纯属白跑（还实例化 RAG/jieba）。改为独立类，去掉继承。
+> 5. **验证通过**: ruff 全绿 / mypy 50 files no issues / app import OK（82 routes）/ pytest 15 passed
+>
+> ```bash
+> # 复验:
+> uv run python -c "from backend.app import app; print('✅ app import OK')"
+> ```
+
+### 8.1.2 Ruff 批量自动修复 — ✅ 已完成
+
+```bash
+uv run ruff check backend/ scripts/   # → All checks passed!
+```
+
+### 8.1.3 手工修剩余 Ruff 错误 — ✅ 已完成（无需手工修）
+
+> **原则（保留）:** 主路径（pipeline/skills/observability/core）必须 0 错误；遗留目录（agent/modules/services）允许 per-file-ignores 豁免，后续单独批次清理。
+
+### 8.1.4 验证：质量门禁全绿 — ✅ 已通过（2026-07-31）
+
+```bash
+cd /Users/guowei/Desktop/github/contextgate
+
+# 1. MyPy（主路径）→ Success: no issues found in 50 source files
+uv run mypy
+
+# 2. Ruff → All checks passed!
+uv run ruff check backend/ scripts/
+
+# 3. 全量测试（未跑，需要 postgres；DB 起来后补）
+uv run pytest tests/ -v --tb=short
+
+# 4. 启动冒烟（若执行 chat_service 删除，删除后重跑）
+uv run python -c "
+import sys; sys.path.insert(0, '.')
+from backend.app import app
+print('✅ app import OK')
+"
+```
+
+### 8.1.5 缓存 key 安全确认 — ✅ 已通过（拍板项 A: 带 tenant）
+
+**实现已核实:** `backend/pipeline/nodes/cache_check.py:47,70` + `write_memory.py:70,88`：
+
+- ✅ 正确: `exact:{tenant_id}:{user_id}:{query_hash}` / `template:{tenant_id}:{fingerprint}`
+- 无跨租户泄露风险
+
+### 8.1.6 Commit — ✅ 已完成（1944d8d）
+
+```bash
+git add -A && git commit -m "chore: quality gate cleanup, remove legacy plugins, fix lint debt
+
+Signed-off-by: Joe"
+```
+
+> chat_service 若按选项 A 删除，追加一个 commit（`refactor: remove dead chat router & chat_service`）。
+
+### 8.1.7 新发现（记录待后续批次，不属本批门禁范围）
+
+1. **cache_check 情绪域硬编码**: `backend/pipeline/nodes/cache_check.py:19-33` 的 `_cheap_fingerprint` 仍按情绪词表（焦虑/伤心/害怕/紧张/压力/孤独 → "emotion" 分支）做模板缓存预检，违反 ContextGate "无业务域情绪概念"原则。建议后续批次移除情绪分支，改通用意图归一化（或直接依赖 analyze_parallel 的 fingerprint）。
+2. **mypy 主入口盲区**: `files` 列表未含 `backend/app.py` 与 `backend/routers/`。主入口本身不进类型门禁，建议下一批纳入 routers/ 或至少 app.py。
+3. **OptimizedChatService 预存 AttributeError 隐患**（删 chat_service 时暴露）: `optimized_chat_service.py` 的 `self.llm_client / emotion_analyzer / safety_checker / memory_retriever` 在整条继承链上从未定义。当前不炸是因为 redis 不在依赖声明里（requirements.txt/pyproject.toml 均无），performance/streaming 路由被 app.py 的 try/except 静默关闭。**若未来安装 redis 并开启 PERFORMANCE_OPTIMIZATION_ENABLED，调用端点会 AttributeError** — 启用前必须先补这四个属性或重写该类。
+
+---
+
 ## A. Task 17: 项目占领
 
 ### 17.01: 法律护城河

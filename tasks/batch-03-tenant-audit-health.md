@@ -34,6 +34,13 @@ rm -rf scripts/extract_codex_pdf_outline.py
 
 # Hermes 工作区（抄 Nous Hermes 的临时功能，不属于 ContextGate）
 rm -rf backend/hermes/
+
+# 旧插件系统（天气/新闻/节假日插件 — 被 Skill 系统 Task 07 替代）
+# 引用方确认: backend/main.py + backend/services/chat_service.py（均为旧代码）
+rm -rf backend/plugins/
+
+# 旧单文件入口（与 backend/app.py 重复，run_backend.py 用的是 backend.app:app）
+rm -rf backend/main.py
 ```
 
 ### 3.1.2 情感/情绪相关文件（ContextGate 无情绪概念）
@@ -98,7 +105,15 @@ ls backend/hermes/ 2>/dev/null && echo "❌ 还在" || echo "✅ 已删除"
 
 如果 3.1.3 删除的文件在 `backend/app.py`、`backend/routers/__init__.py`、`config.py` 有 import：
 - 删除对应 import 行
-- 删除对应 try/except 降级逻辑（如 `EMOTION_ENABLED`、`HERMES_ROUTER_ENABLED`）
+- 删除对应 try/except 降级逻辑（如 `EMOTION_ENABLED`、`HERMES_ROUTER_ENABLED`、`PERFORMANCE_OPTIMIZATION_ENABLED`）
+
+**⚠️ 必须保留（新 pipeline 依赖，不要删）:**
+```bash
+backend/modules/llm/core/llm_core.py    # backend/pipeline/llm_helper.py 引用
+backend/modules/rag/                    # RAG 功能
+backend/modules/intent/                 # 意图识别
+backend/database/pgvector_session.py    # 新存储层
+```
 
 ---
 
