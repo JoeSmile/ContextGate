@@ -60,3 +60,12 @@ auth_check → load_memory → rate_limiter → cache_check
 
 Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`
 每个 commit 加 `Signed-off-by: Joe`
+
+## 实现后 Code Review 工作流
+
+详见 `.cursor/rules/post-impl-code-review.mdc`：
+
+1. 做完代码 → 跑计划内验证 → **立刻 code review**
+2. **Important** 错误：列出来给用户审核，不擅自改
+3. Critical / Minor：直接改正
+4. Important 未决前，不进入下一个 Batch
