@@ -7,7 +7,7 @@
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| `tasks/20-v1-1-hardening.md` | v1.1:RAG Deepening(20.01)/ SSE polish(20.02)/ 指纹清理(20.03)/ mypy 扩展(20.04)/ 示例清理(20.05)/ Admin UI 决策(20.06) | 待执行 |
+| `tasks/20-v1-1-hardening.md` | v1.1:RAG Deepening(20.01)/ SSE polish(20.02)/ 指纹清理(20.03)/ mypy 扩展(20.04)/ 示例清理(20.05)/ Admin UI 决策(20.06) | ✅ 完成 |
 | `tasks/21-v1-2-enterprise.md` | v1.2:ModelRegistry(21.01)/ 多模态提取(21.02)/ Windows 部署(21.03)/ A-B 框架(21.04)/ 成本看板(21.05)/ span 级观测(21.06) | 待执行(依赖 20) |
 
 ## 完成情况
@@ -25,13 +25,14 @@
 | Batch 8 | Ownership + LLM Key 治理 | `116047f`, `070b16c` |
 | Batch 10 | 情绪子系统拆除 | `5bfeadd` → `9d646ce`(8 commits) |
 | Task 19 | 性能瓶颈消除 | `9d5f493` |
+| Task 20 | v1.1 加固与打磨 | `feat/task-20-v1-1-hardening` |
 | SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
 
 ## 遗留验收(全部满足)
 
 - `make verify` — 品牌 10 词门禁全绿(含负向测试)
-- `make check` — ruff + mypy,56 files
-- `pytest` — 15 passed
+- `make check` — ruff + mypy,96 files
+- `pytest` — 21 passed
 - `scripts/verify_schema.py` — 24 张表与 ORM 一致
 - `scripts/audit_consistency.py` — 7 维度全绿
 

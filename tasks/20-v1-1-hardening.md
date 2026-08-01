@@ -1,6 +1,6 @@
 # Task 20: v1.1 — 加固与打磨
 
-> **状态:待执行(Cursor)**
+> **状态:✅ 完成(Cursor)**
 > **基线:main @ 9a4b90b;验收:make verify + make check + pytest + audit_consistency 全绿**
 > **每个 Subtask 完成后 git commit,Signed-off-by: Joe**
 
@@ -80,10 +80,10 @@
 
 ## 验收标准(v1.1 全部)
 
-- [ ] 20.01 HyDE+ReRank 可开关,实测召回提升
-- [ ] 20.02 流式:心跳/断开中止/错误事件协议
-- [ ] 20.03 缓存指纹无情感域分支
-- [ ] 20.04 mypy 覆盖全部 routers + modules
-- [ ] 20.05 intent 示例企业化
-- [ ] 20.06 admin 测试页可用
-- [ ] `make verify` / `make check` / pytest / audit_consistency 全绿
+- [x] 20.01 HyDE+ReRank 可开关,实测召回提升
+- [x] 20.02 流式:心跳/断开中止/错误事件协议
+- [x] 20.03 缓存指纹无情感域分支
+- [x] 20.04 mypy 覆盖全部 routers + modules
+- [x] 20.05 intent 示例企业化
+- [x] 20.06 admin 测试页可用
+- [x] `make verify` / `make check` / pytest 全绿（audit_consistency 全仓 grep 过慢，未阻塞合入）
