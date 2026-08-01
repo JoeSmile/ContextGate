@@ -2,7 +2,6 @@
 
 > **项目:** ContextGate
 > **标语:** The Intelligent Gateway for LLM Context Management
-> **源项目:** emotional_chat (心语情感陪伴机器人)
 > **作者:** Joe
 > **包管理:** uv
 > **目标:** 将 emotional_chat demo 改造为可观测、可审计、可扩展、安全的企业级 LLM 前置处理管线
