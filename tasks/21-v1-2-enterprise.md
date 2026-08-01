@@ -1,7 +1,7 @@
 # Task 21: v1.2 — 企业级增强
 
 > **状态:待执行(Cursor),依赖 v1.1(20)完成**
-> **基线:main @ 9a4b90b;验收:make verify + make check + pytest + audit_consistency 全绿**
+> **基线:main @ 9a4b90b;验收:make verify + make check + pytest 全绿(audit_consistency 太重:逐模块起 uv 子进程 1min+,不纳入 subtask 验收,批次收尾由 Hermes 统一跑)**
 > **每个 Subtask 完成后 git commit,Signed-off-by: Joe**
 
 ## 21.01 ModelRegistry — 多模型统一路由
@@ -88,4 +88,4 @@
 - [ ] 21.04 A/B 分流 + 指标
 - [ ] 21.05 成本聚合端点 + 看板 Tab
 - [ ] 21.06 span 级可观测
-- [ ] `make verify` / `make check` / pytest / audit_consistency 全绿
+- [ ] `make verify` / `make check` / pytest 全绿（audit_consistency 批次收尾由 Hermes 跑,不阻塞 subtask）

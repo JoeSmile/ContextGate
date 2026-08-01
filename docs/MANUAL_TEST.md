@@ -27,10 +27,16 @@ make run         # uvicorn :8000 (APP_ENV=dev, LLM_PROVIDER=replay)
 | `RAG_HYDE_ENABLED` | false | [T20] 20.01,验证时开关对比 |
 | `RAG_RERANK_ENABLED` | false | [T20] 20.01 |
 
-**回归基线**(每轮测试收尾跑,全绿才算本轮通过):
+**回归基线**(日常循环跑前三个即可,快):
 
 ```bash
-make verify && make check && uv run pytest && uv run python scripts/audit_consistency.py
+make verify && make check && uv run pytest
+```
+
+`scripts/audit_consistency.py`(7 维全仓一致性)很重(第 7 维逐模块起 uv 子进程,1 分钟+),**只在批次收尾/改名删文件/动文档与 env 键后跑**,日常循环不必。
+
+```bash
+uv run python scripts/audit_consistency.py   # 里程碑终检专用
 ```
 
 ---

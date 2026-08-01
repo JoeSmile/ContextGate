@@ -1,7 +1,7 @@
 # Task 20: v1.1 — 加固与打磨
 
 > **状态:✅ 完成(Cursor)**
-> **基线:main @ 9a4b90b;验收:make verify + make check + pytest + audit_consistency 全绿**
+> **基线:main @ 9a4b90b;验收:make verify + make check + pytest 全绿(audit_consistency 太重,批次收尾由 Hermes 跑,见验收清单备注)**
 > **每个 Subtask 完成后 git commit,Signed-off-by: Joe**
 
 ## 20.01 RAG Deepening — HyDE + ReRank
