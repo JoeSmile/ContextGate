@@ -7,7 +7,7 @@
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| _(无)_ | v1.0–v1.2 follow-up 已完成，新工作见下方格式新建 Task | — |
+| `tasks/23-test-coverage-gap.md` | 补测:multimodal(23.01)/ sampling(23.02)/ A-B hooks+router(23.03) | 待执行 |
 
 ## 完成情况
 
