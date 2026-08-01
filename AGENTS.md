@@ -1,8 +1,8 @@
 # ContextGate — 开发指引
 
-> **开始改造前，先读 `tasks/batch-README.md` 了解批次计划。**
-> **执行入口: `tasks/batch-*.md`，按编号顺序执行。**
-> **详细参考: `tasks/00-*.md` ~ `tasks/17-*.md`，验收时对照。**
+> **任务状态:全部完成(2026-08-01),见 `tasks/README.md`。**
+> **历史批次与验收标准:`tasks/archive/`(仅供追溯)。**
+> **新任务:`tasks/README.md` 的"新任务怎么写"。**
 
 ## 项目
 

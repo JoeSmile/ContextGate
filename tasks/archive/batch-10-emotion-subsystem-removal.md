@@ -403,9 +403,9 @@ Signed-off-by: Joe"
 
 ## 验收标准
 
-- [ ] `grep -rn "emotion\|情绪\|情感\|共情\|empathy" backend/ --include="*.py"`（核心路径）≈ 0；遗留层仅剩已中性化的协议常量（如 EMOTIONAL_SUPPORT 注释标注"遗留"）
-- [ ] `grep -rn "心语\|XINYU\|情感陪伴" backend/ scripts/` = 0
-- [ ] ruff / mypy / pytest / app import 全绿
-- [ ] DB 三张表（chat_messages / memory_items / response_evaluations / user_profiles）无 emotion/empathy 列
-- [ ] `make verify` 通过
-- [ ] 每 Phase 一个 commit，`Signed-off-by: Joe`
+- [x] `grep -rn "emotion\|情绪\|情感\|共情\|empathy" backend/ --include="*.py"`（核心路径）≈ 0；遗留层仅剩已中性化的协议常量（如 EMOTIONAL_SUPPORT 注释标注"遗留"）
+- [x] `grep -rn "心语\|XINYU\|情感陪伴" backend/ scripts/` = 0
+- [x] ruff / mypy / pytest / app import 全绿
+- [x] DB 三张表（chat_messages / memory_items / response_evaluations / user_profiles）无 emotion/empathy 列
+- [x] `make verify` 通过
+- [x] 每 Phase 一个 commit，`Signed-off-by: Joe`

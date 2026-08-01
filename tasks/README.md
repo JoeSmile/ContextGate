@@ -1,81 +1,48 @@
-# ContextGate — 改造计划
+# ContextGate — 改造任务状态
 
-> **项目:** ContextGate
-> **标语:** The Intelligent Gateway for LLM Context Management
-> **作者:** Joe
-> **包管理:** uv
-> **目标:** 将 emotional_chat demo 改造为可观测、可审计、可扩展、安全的企业级 LLM 前置处理管线
+> **状态:全部完成(2026-08-01)**
+> 19 个 Task · 89 个 Subtask · 8 个 Batch · 1 个独立批次(情绪子系统拆除),全部实现并验证通过。
 
----
+## 完成情况
 
-## 架构总览
+| 批次 | 内容 | 完成提交(节选) |
+|------|------|----------------|
+| Batch 1 | Rebranding + pgvector 迁移 | `1c2d9ac`, `e3b2548` |
+| Batch 2 | 认证 + RBAC0 + 请求签名 | `1eee7d6` |
+| Batch 3 | 多租户 + 审计 + 健康检查 | `11dffd9`, `28ad90f` |
+| Batch 4 | LangGraph 管线(10 节点) | `59d5d16` |
+| Batch 5a | 可观测 + 缓存 + 护栏 + 上传 + 断路器 | `fd3c496` |
+| Batch 5b | 成本治理 + 模型路由 + Skill | `c58205f` |
+| Batch 6 | 依赖锁定 + Seed + Mock | `5b43a25` |
+| Batch 7 | Docker + CI/CD + 生产部署 | `d8bf458` |
+| Batch 8 | Ownership + LLM Key 治理 | `116047f`, `070b16c` |
+| Batch 10 | 情绪子系统拆除 | `5bfeadd` → `9d646ce`(8 commits) |
+| Task 19 | 性能瓶颈消除 | `9d5f493` |
+| SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
 
+## 遗留验收(全部满足)
+
+- `make verify` — 品牌 10 词门禁全绿(含负向测试)
+- `make check` — ruff + mypy,56 files
+- `pytest` — 15 passed
+- `scripts/verify_schema.py` — 24 张表与 ORM 一致
+- `scripts/audit_consistency.py` — 7 维度全绿
+
+## 历史文档
+
+完成批次的详细计划、代码骨架、验收标准在 `tasks/archive/`,仅供追溯,不再执行。
+
+## 新任务怎么写
+
+新工作按以下格式在 `tasks/` 下新建编号文件(如 `20-xxx.md`):
+
+```markdown
+# Task 20: 标题
+## Subtask 20.01: 标题
+> 现状: ...
+**方案:** ...
+**修改文件:** ...
+**验证:** ...
 ```
-用户 → FastAPI → LangGraph StateGraph → pgvector → LangFuse
-                                                ↑
-                        Auth(RBAC0) → Guardrails → Prometheus
-```
 
-### 管线图
-
-```
-[START] → auth_check → load_memory → rate_limiter → cache_check
-  ├── [hit] ──► [END]
-  └── [miss] ──► guardrails_input → analyze_parallel(并行)
-                  → build_context → model_router
-                    ├── [short] execute skill → [END]
-                    └── [long] llm_generate → guardrails_output
-                            → write_memory + audit → [END]
-```
-
-### 19 个 Task · 89 个 Subtask
-
-| # | Task | Subtask 数 | 领域 |
-|---|------|-----------|------|
-| 00 | Rebranding — ContextGate | 5 | 基建 |
-| 01 | pgvector 迁移 | 5 | 存储 |
-| 02 | 认证 + RBAC0 + 审批 + **请求签名** | 6 | 安全 |
-| 03 | 多租户 + 审计日志 | 4 | 企业 |
-| 04 | LangGraph 管线重构 | 10 | 核心 |
-| 05 | LangFuse 可观测性 | 3 | 观测 |
-| 06 | 缓存系统（精确+指纹） | 3 | 性能 |
-| 07 | 成本治理 + 模型路由 + Skill | 6 | 成本 |
-| 08 | 依赖锁定 | 1 | 基建 |
-| 09 | 安全护栏 | 3 | 安全 |
-| 10 | 文件上传加固 | 2 | 安全 |
-| 11 | 断路器 + 降级 | 3 | 韧性 |
-| 12 | 健康检查 + SLA + 错误码 | 3 | 运维 |
-| 13 | Seed 数据 + Mock 剧本 | 3 | 测试 |
-| 14 | Docker + uv 最终化 | 4 | 部署 |
-| 15 | CI/CD | 3 | 工程 |
-| 16 | 生产部署 | 2 | 部署 |
-| 17 | 项目占领 / Ownership | 7 | 社区 |
-| **18** | **LLM API Key 安全治理** | **7** | **安全** |
-| **19** | **性能瓶颈消除** | **10** | **性能** |
-
-### 权限模型（RBAC0 + 应用级）
-
-4 种角色:
-- **super_admin** — 跨租户管理，`admin:*`
-- **auditor** — 跨租户只读审计，`audit:read`, `audit:export`
-- **tenant_admin** — 本租户管理，`chat:*`, `kb:*`, `admin:approve`
-- **user** — 应用级权限挂载
-
-Permission = `{resource}:{action}`
-认证: `X-API-Key` Header → SHA256 hash → `api_keys` 表
-
-### Mock 策略
-
-| 组件 | 方式 |
-|------|------|
-| 主 LLM | **不 Mock**，走真实 API |
-| Embedding | `np.random.randn(1536)` |
-| 情绪/意图分析 | 直接调大模型 JSON 输出 |
-| 记忆提取 | 预设 5 组 YAML 剧本 |
-
-### 执行顺序
-
-``` 00 → 01 → 02 → 03 → 04(最大) → 05 06 07(可并行) → 08 → 09 10 11 12(可并行) → 13 → 14 → 15 16(可并行) → 17 18(最后，18 依赖 02+03+04+07) → 19(建议 Batch 4 前先做 19.01~19.03 得基准线，其余 Batch 5 阶段并行) ```
-
-每个 Subtask 5-10 分钟，完成后 git commit。
-任务文件在 `tasks/` 目录下，每个文件包含完整描述、代码骨架和验证命令。
+完成后把文件移入 `tasks/archive/` 并更新本 README 的完成表。
