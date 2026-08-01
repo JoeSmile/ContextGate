@@ -1,6 +1,6 @@
 # Task 23: 补齐 v1.2 测试覆盖缺口
 
-> **状态:待执行(Cursor)**
+> **状态:✅ 完成(Cursor)**
 > **基线:feat/task-21-v1-2-enterprise @ bafd36c(或 merge 后的 main);验收:make verify + make check + pytest 全绿**
 > **每个 Subtask 完成后 git commit,Signed-off-by: Joe**
 > **背景:Task 21/22 Code Review Important #2(拍板 2A,2026-08-01)— CONTRIBUTING 要求新代码有测;22.02 已覆盖 registry / `_pick_variant` / cost_summary 参数拼装,下列模块仍无单测。**
@@ -41,10 +41,10 @@
 
 ## 验收标准(Task 23 全部)
 
-- [ ] 23.01 multimodal + sanitizer 测绿
-- [ ] 23.02 sampling 测绿
-- [ ] 23.03 hooks + ab router 测绿
-- [ ] `make verify` / `make check` / pytest 全绿(计数相对 33 上升)
+- [x] 23.01 multimodal + sanitizer 测绿
+- [x] 23.02 sampling 测绿
+- [x] 23.03 hooks + ab router 测绿
+- [x] `make verify` / `make check` / pytest 全绿(计数相对 33 上升 → 70 passed)
 
 ## Cursor 会踩的坑
 

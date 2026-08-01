@@ -7,7 +7,7 @@
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| `tasks/23-test-coverage-gap.md` | 补测:multimodal(23.01)/ sampling(23.02)/ A-B hooks+router(23.03) | 待执行 |
+| _(无)_ | v1.0–v1.2 + Task 23 已完成，新工作见下方格式新建 Task | — |
 
 ## 完成情况
 
@@ -27,13 +27,14 @@
 | Task 20 | v1.1 加固与打磨 | `feat/task-20-v1-1-hardening` |
 | Task 21 | v1.2 企业级增强 | `feat/task-21-v1-2-enterprise` |
 | Task 22 | v1.2 收尾(测/策略/conversion) | `feat/task-21-v1-2-enterprise` |
+| Task 23 | v1.2 测试覆盖补齐 | `feat/task-21-v1-2-enterprise` |
 | SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
 
 ## 遗留验收(全部满足)
 
 - `make verify` — 品牌 10 词门禁全绿(含负向测试)
 - `make check` — ruff + mypy,102 files
-- `pytest` — 33 passed
+- `pytest` — 70 passed
 - `scripts/verify_schema.py` — 24 张表与 ORM 一致
 - `scripts/audit_consistency.py` — 7 维度全绿
 
