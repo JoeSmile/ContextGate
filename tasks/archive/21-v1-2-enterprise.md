@@ -1,6 +1,6 @@
 # Task 21: v1.2 — 企业级增强
 
-> **状态:待执行(Cursor),依赖 v1.1(20)完成**
+> **状态:✅ 完成(Cursor),依赖 v1.1(20)完成**
 > **基线:main @ 9a4b90b;验收:make verify + make check + pytest 全绿(audit_consistency 太重:逐模块起 uv 子进程 1min+,不纳入 subtask 验收,批次收尾由 Hermes 统一跑)**
 > **每个 Subtask 完成后 git commit,Signed-off-by: Joe**
 
@@ -82,10 +82,10 @@
 
 ## 验收标准(v1.2 全部)
 
-- [ ] 21.01 模型注册表 + 按策略路由
-- [ ] 21.02 音频/图片提取入知识库
-- [ ] 21.03 Windows 安装文档 + 脚本
-- [ ] 21.04 A/B 分流 + 指标
-- [ ] 21.05 成本聚合端点 + 看板 Tab
-- [ ] 21.06 span 级可观测
-- [ ] `make verify` / `make check` / pytest 全绿（audit_consistency 批次收尾由 Hermes 跑,不阻塞 subtask）
+- [x] 21.01 模型注册表 + 按策略路由
+- [x] 21.02 音频/图片提取入知识库
+- [x] 21.03 Windows 安装文档 + 脚本
+- [x] 21.04 A/B 分流 + 指标
+- [x] 21.05 成本聚合端点 + 看板 Tab
+- [x] 21.06 span 级可观测
+- [x] `make verify` / `make check` / pytest 全绿（audit_consistency 批次收尾由 Hermes 跑,不阻塞 subtask）

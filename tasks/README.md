@@ -1,14 +1,13 @@
 # ContextGate — 改造任务状态
 
-> **v1.0 全部完成(2026-08-01)** · **v1.1/v1.2 进行中**
+> **v1.0 全部完成(2026-08-01)** · **v1.1/v1.2 完成**
 > 19 个 Task · 89 个 Subtask · 8 个 Batch · 1 个独立批次(情绪子系统拆除),全部实现并验证通过。
 
 ## 活动任务
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| `tasks/20-v1-1-hardening.md` | v1.1:RAG Deepening(20.01)/ SSE polish(20.02)/ 指纹清理(20.03)/ mypy 扩展(20.04)/ 示例清理(20.05)/ Admin UI 决策(20.06) | ✅ 完成 |
-| `tasks/21-v1-2-enterprise.md` | v1.2:ModelRegistry(21.01)/ 多模态提取(21.02)/ Windows 部署(21.03)/ A-B 框架(21.04)/ 成本看板(21.05)/ span 级观测(21.06) | 待执行(依赖 20) |
+| _(无)_ | v1.0–v1.2 已完成，新工作见下方格式新建 Task | — |
 
 ## 完成情况
 
@@ -26,6 +25,7 @@
 | Batch 10 | 情绪子系统拆除 | `5bfeadd` → `9d646ce`(8 commits) |
 | Task 19 | 性能瓶颈消除 | `9d5f493` |
 | Task 20 | v1.1 加固与打磨 | `feat/task-20-v1-1-hardening` |
+| Task 21 | v1.2 企业级增强 | `feat/task-21-v1-2-enterprise` |
 | SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
 
 ## 遗留验收(全部满足)
