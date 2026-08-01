@@ -11,8 +11,9 @@
 **方案:**
 - `backend/core/model_registry.py`(新建):模型注册表,每条 = {name, provider, base_url, api_key_ref, capability(chat/embedding/vision), cost_per_1k, max_tokens, enabled}
 - 数据源:env + `llm_api_keys` 表(复用 Task 18 的 KeyManager 加密取 key),env 示例见 config.env.example
-- `model_router` 节点改为查注册表:意图/预算/租户 → 模型选择(短路径 skill 不走模型、长路径按 COST 策略)
+- `model_router` 节点改为查注册表:意图 → 档位 → 模型选择(短路径 skill 不走模型、长路径按 COST 策略)
 - 本地模型:OpenAI 兼容(vLLM/ollama)直接注册,`base_url=http://localhost:8001/v1` 这类
+- **实现备注(Task 22.01):** 同 tier 取 `cost_per_1k` 最低(cheapest-in-tier)。tenant budget / 配额语义(硬限/软限、超额拒绝还是降级、超额审计留痕)移 v2.0,待产品决策,不在本版本赶。
 
 **修改文件:** `backend/core/model_registry.py`(新建)、`backend/pipeline/nodes/model_router.py`、`backend/modules/llm/harness.py`、`config.py`、`config.env.example`
 **验证:** 注册 2 个模型(deepseek + 本地 mock),`/chat` 长路径命中配置模型;`make check`
@@ -50,6 +51,7 @@
 - `ab_experiments` 表 + `backend/core/ab/`(新建):experiment(名称/分流比例/变体 A/B 配置)/assignment(用户-实验-变体,确定性 hash 分流)/event(曝光/转化)
 - `/api/ab/*` 管理端点 + pipeline 内 `experiment_hook`(在 build_context 后按分流注入变体配置)
 - 指标:LangFuse trace 加 experiment 标签,评估落库
+- **实现备注(Task 22.04):** conversion 由管线 `conversion_hook` 在短/长路径自动落库(不再依赖手动 `/api/ab/events`);exposure 仍由 `experiment_hook` 写入。
 
 **修改文件:** `backend/core/ab/`(新建)、`alembic/versions/003_ab_experiments.py`(新建)、`backend/routers/admin.py`、`backend/pipeline/graph.py`
 **验证:** 100 次请求分流比例 ≈ 配置;变体 B 的 prompt 生效;`make check`
@@ -60,7 +62,7 @@
 
 **方案:**
 - `backend/core/cost_manager.py` 加聚合:按租户/模型/时间窗口的 token+成本(按日/按小时)
-- `GET /api/admin/cost-summary?tenant_id=&from=&to=` 端点(admin 权限)
+- `GET /api/admin/cost-summary?tenant_id=&from_ts=&to_ts=&granularity=day|hour` 端点(admin 权限)。`from`/`to` 是 Python 保留字,故用 `*_ts`,时间戳语义明确。
 - `examples/admin.html` 加成本 Tab(配合 20.06)
 
 **修改文件:** `backend/core/cost_manager.py`、`backend/routers/admin.py`、`examples/admin.html`
