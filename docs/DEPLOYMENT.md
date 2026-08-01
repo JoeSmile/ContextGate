@@ -6,7 +6,7 @@
 cp config.env.example config.env
 docker compose -f docker-compose.local.yml up -d
 uv sync
-uv run python -c "from backend.database.pgvector_session import PGVectorSession; PGVectorSession().init_db()"
+uv run alembic upgrade head
 uv run python scripts/seed_api_keys.py
 uv run uvicorn backend.app:app --reload
 ```
