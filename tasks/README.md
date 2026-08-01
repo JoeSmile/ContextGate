@@ -1,13 +1,13 @@
 # ContextGate — 改造任务状态
 
-> **v1.0 全部完成(2026-08-01)** · **v1.1/v1.2 完成**
+> **v1.0 全部完成(2026-08-01)** · **v1.1/v1.2 完成** · **v1.2 follow-up 完成**
 > 19 个 Task · 89 个 Subtask · 8 个 Batch · 1 个独立批次(情绪子系统拆除),全部实现并验证通过。
 
 ## 活动任务
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| _(无)_ | v1.0–v1.2 已完成，新工作见下方格式新建 Task | — |
+| _(无)_ | v1.0–v1.2 follow-up 已完成，新工作见下方格式新建 Task | — |
 
 ## 完成情况
 
@@ -26,13 +26,14 @@
 | Task 19 | 性能瓶颈消除 | `9d5f493` |
 | Task 20 | v1.1 加固与打磨 | `feat/task-20-v1-1-hardening` |
 | Task 21 | v1.2 企业级增强 | `feat/task-21-v1-2-enterprise` |
+| Task 22 | v1.2 收尾(测/策略/conversion) | `feat/task-21-v1-2-enterprise` |
 | SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
 
 ## 遗留验收(全部满足)
 
 - `make verify` — 品牌 10 词门禁全绿(含负向测试)
-- `make check` — ruff + mypy,101 files
-- `pytest` — 21 passed
+- `make check` — ruff + mypy,102 files
+- `pytest` — 33 passed
 - `scripts/verify_schema.py` — 24 张表与 ORM 一致
 - `scripts/audit_consistency.py` — 7 维度全绿
 
