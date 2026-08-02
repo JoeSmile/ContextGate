@@ -7,6 +7,7 @@
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
+| `tasks/27-llm-key-failover.md` | LLM Key 故障转移:候选链 + 429/401 自动切 key + 冷却 + 健康摘除(P0 清单项) | 待执行 |
 | （无） | EVID-03 fixture 重录等见 `docs/EVIDENCE_PACK.md` | — |
 
 ## 完成情况
