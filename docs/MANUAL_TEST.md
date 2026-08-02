@@ -82,7 +82,7 @@ uv run python scripts/audit_consistency.py   # 里程碑终检专用
 
 ## 3. Chat 管线(核心)
 
-页面: playground.html / curl
+页面: `http://localhost:8000/playground/playground.html`(BASE 相对路径,填 key 后逐项测)
 
 ```bash
 KEY=你的seed_key
