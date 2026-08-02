@@ -8,7 +8,7 @@
 | 文件 | 内容 | 状态 |
 |------|------|------|
 | `tasks/25-evidence-fix-batch.md` | 证据包小修批:EVID 05 注入变体 / 06 PII 顺序 / 07 init-sample / 10 await / 12 admin key / 04 cache 降级 / 11 文档 + 回归单测 | 待执行 |
-| `tasks/26-llm-provider-unify.md` | EVID-08:LLM 依赖路径(RAG ask/Agent/Eval)统一走 mock/record/replay 抽象,方案 A/B 待拍板 | 待拍板 |
+| `tasks/26-llm-provider-unify.md` | EVID-08:LLM 依赖路径(RAG ask/Agent/Eval)统一走 mock/record/replay 抽象 | ✅ 已拍板(方案 A)→ 待执行 |
 
 ## 完成情况
 

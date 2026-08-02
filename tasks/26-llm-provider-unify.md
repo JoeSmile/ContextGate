@@ -1,6 +1,6 @@
 # Task 26: LLM 依赖路径统一 mock/replay 抽象 [EVID-08]
 
-> **状态:待拍板(方案 A/B 见 26.01)→ 拍板后待执行(Cursor)**
+> **状态:✅ 已拍板(方案 A,复用 harness)→ 待执行(Cursor)**
 > **基线:main @ 1cb917a;验收:make verify + make check + pytest 全绿**
 > **来源:docs/EVIDENCE_PACK.md EVID-08 — 内容计划「离线可复现」的硬前提。**
 
@@ -13,9 +13,9 @@
 
 后果:replay 模式下 RAG/Agent/评测全部不可用 → 证据包、内容截图、CI 离线演示全被卡。
 
-## 26.01 方案(拍板)
+## 26.01 方案(已拍板:方案 A)
 
-**方案 A(推荐):统一 LLM 客户端工厂**
+**方案 A(拍板确认):统一 LLM 客户端工厂**
 - 在 `backend/core/harness/` 加一个 `get_llm_client()` 工厂:按 `LLM_PROVIDER` 返回 mock/record/replay/openai 实现(复用 harness.py 现有 provider 逻辑,不新造)
 - RAGService / AgentService / EvaluationEngine 三处把直接 LLM 调用替换为工厂调用
 - 现有 `LLM_PROVIDER=replay` 的 fixture 体系自动覆盖三条路径(未命中降级 mock,与 /chat 一致)
@@ -24,7 +24,7 @@
 - 仅在 LLM_PROVIDER=mock 时返回确定性响应,record/replay 不接
 - 成本低,但 replay 确定性/回放能力对 RAG/Agent/评测仍缺失,内容截图依然不稳
 
-**推荐 A。** 依据:工厂抽取是复用而非重构(harness 已有四种 provider),改动面可控;一次性解决「离线可复现」,是内容计划与 CI 的前提。
+**推荐 A。** 依据:工厂抽取是复用而非重构(harness 已有四种 provider),改动面可控;一次性解决「离线可复现」,是内容计划与 CI 的前提。**(2026-08-02 Joe 拍板:复用 harness,方案 A 确认。)**
 
 ## 26.02 实施(方案 A 落地后执行)
 
