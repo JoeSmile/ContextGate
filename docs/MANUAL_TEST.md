@@ -10,7 +10,7 @@
 
 ```bash
 cd ~/Desktop/github/contextgate
-make up          # docker compose: postgres+pgvector+langfuse
+make up          # docker compose: postgres+pgvector+redis stack+langfuse
 make db-init     # alembic 建表
 make seed        # API key + 示例数据(输出新 key,只显示一次,记下来)
 make run         # uvicorn :8000 (APP_ENV=dev, LLM_PROVIDER=replay)
