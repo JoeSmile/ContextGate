@@ -13,7 +13,7 @@
 3. **多 Agent(本轮含 Agent 调 Agent)**: Agent = 组合型 Capability(角色+记忆+能力集),
    递归抽象使 Agent 可调 Agent,治理层看到的是两条能力调用记录,成本/审计/护栏全程不脱管。
 4. **自研 workflow studio 后置**(对标 Dify 的 react-flow 画布工作量大),导航预留入口 + GraphSpec 类型地基先建。
-5. 前端技术栈(用户指定): React 19 + Vite 6 + TypeScript + zustand(persist 认证) + @tanstack/react-query + Tailwind v4 + Radix UI(shadcn 风格)。
+5. 前端技术栈(用户指定): React 19 + Vite 8(脚手架 create-vite 当前默认;原记 Vite 6,2026-08-03 拍板接受 8) + TypeScript + zustand(persist 认证) + @tanstack/react-query + Tailwind v4 + Radix UI(shadcn 风格)。
    SSE 手写 fetch + ReadableStream 解析器(不用 EventSource——POST + 自定义头;不用 fetch-event-source——后端无 Last-Event-ID)。
 6. **首轮交付 = 测试 FE**: 先做统一测试前端,替代散装 HTML QA 页(playground/admin/rag/agent 等 7 个互不相通页面)
    ——灵魂功能是**角色切换器**(4 角色 key 一键切换 + 角色徽章 + 403 高亮),让"user 看到什么 / admin 看到什么"的权限边界一眼可见。
