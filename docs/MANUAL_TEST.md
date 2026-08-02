@@ -29,6 +29,11 @@ make run         # uvicorn :8000 (APP_ENV=dev, LLM_PROVIDER=replay)
 | `EMBEDDING_MODEL` | text-embedding-v3 | [T28] DashScope 向量模型 |
 | `EMBEDDING_DIMENSIONS` | 768 | [T28] API 请求维度(存储仍补零到 1536) |
 | `EMBEDDING_BASE_URL` | https://dashscope.aliyuncs.com/compatible-mode/v1 | [T28] 与 QWEN 同源;key 默认 QWEN_API_KEY |
+| `RAG_CACHE_ENABLED` | true | [T29] L1/L2 Redis 缓存;需 redis-stack |
+| `RAG_CACHE_TTL_ANSWER` | 3600 | [T29] L1 滑动 TTL(上限 4h) |
+| `RAG_CACHE_TTL_EMBED` | 86400 | [T29] L2 embedding TTL |
+| `RAG_RATE_LIMIT_REQ` | 60 | [T29] 请求/分钟/租户 |
+| `RAG_RATE_LIMIT_MISS` | 10 | [T29] L1 miss/分钟/租户 |
 
 **回归基线**(日常循环跑前三个即可,快):
 
@@ -166,9 +171,13 @@ curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 | 6.4 | ask [T28] | 回答有引用来源 |
 | 6.5 | HyDE 开关 [T20][T28] | `RAG_HYDE_ENABLED=true` 重启后,同问句 top-1 命中比 false 更准(用长问句/术语变体验证) |
 | 6.6 | ReRank 开关 [T20][T28] | `RAG_RERANK_ENABLED=true` 后 top-1 与开关前对比,记录差异 |
-| 6.7 | reset | `DELETE /api/rag/reset` 清空,再 ask 走无知识路径 |
+| 6.7 | reset | `DELETE /api/rag/reset` + `X-API-Key` 清空,再 ask 走无知识路径 |
+| 6.8 | L1 缓存 [T29] | 同 query 连打 20 次:`cache_hit` 第 1 次 false,之后 true;延迟显著下降 |
+| 6.9 | epoch 失效 [T29] | upload 后同 query 立即 `cache_hit=false`(同租户 epoch) |
+| 6.10 | 限流 [T29] | 压测 miss → 结构化 `RATE_001` |
+| 6.11 | status.cache [T29] | `GET /api/rag/status` + key:含 `cache.hit_ratio`;`l1_entries`/`l2_entries` 为 Redis SCAN 基数(`entries_source=scan`) |
 
-**通过标准:** [T28] 6.3 语义 top-1 过关;[T20] 6.5/6.6 记录开关前后 top-1 对比数据(留档)。
+**通过标准:** [T28] 6.3 语义 top-1 过关;[T20] 6.5/6.6 记录开关前后 top-1 对比数据(留档);[T29] 6.8–6.11 缓存/限流行为符合预期。
 
 ---
 

@@ -126,6 +126,13 @@ for i in $(seq 1 20); do curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type
 - 知识库变更: upload 一个文件后,同 query 立即 cache_hit=false(epoch 失效生效)
 - PII: 问含身份证号的问题 → redis 无新 L1 条目
 
+## 实现取舍记录(2026-08-02 code review 后补)
+
+- **审计 cache_hit 无独立字段**: `audit_logs` 表无 cache_hit 列,实现以 `input_text` 前缀
+  `cache_hit=1|` 溯源(见 rag_service._audit)。正式字段(加列迁移)留 v2.0。
+- **RAG 端点认证**: 实现时为全部 9 个端点补了 `chat:write` 认证(原大部分裸奔,属安全改进);
+  语义上 kb 端点更贴切的是 `kb:read/kb:write`,角色表内 user 均具备,功能无差异,权限细化留后续。
+
 ## 不在本 Task 范围(记录待决)
 
 - 进程内 L1(LRU)兜底 redis——多 worker 脏读风险,等单进程压测有需要再做
