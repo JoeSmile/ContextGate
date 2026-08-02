@@ -1,5 +1,7 @@
 # Task 28: 真实 Embedding 接入(text-embedding-v3,768 维)
 
+> **状态:✅ 完成(Cursor)**
+> **验收:make verify + make check + pytest 105 passed;人工 §6 [T28] 需起服后实测**
 > **决策记录(2026-08-02, Joe 已拍板):** 用 DashScope `text-embedding-v3` + `dimensions=768`。
 > 依据: QWEN_API_KEY 现成、费用按 token 计费(维度不影响价格)、768 是中文检索甜点(MTEB 768 vs 1024 差 <1pt)、
 > 存储列是 Vector(1536) + `embed_text` 自动补零 → 768/1024 都不用改 schema(补零对 cosine 零影响)。

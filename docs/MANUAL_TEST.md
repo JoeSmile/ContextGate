@@ -26,6 +26,9 @@ make run         # uvicorn :8000 (APP_ENV=dev, LLM_PROVIDER=replay)
 | `LLM_KEY_MASTER_KEY` | 64 hex | 加密 llm_api_keys 表;不设则 env 明文 |
 | `RAG_HYDE_ENABLED` | false | [T20] 20.01,验证时开关对比 |
 | `RAG_RERANK_ENABLED` | false | [T20] 20.01 |
+| `EMBEDDING_MODEL` | text-embedding-v3 | [T28] DashScope 向量模型 |
+| `EMBEDDING_DIMENSIONS` | 768 | [T28] API 请求维度(存储仍补零到 1536) |
+| `EMBEDDING_BASE_URL` | https://dashscope.aliyuncs.com/compatible-mode/v1 | [T28] 与 QWEN 同源;key 默认 QWEN_API_KEY |
 
 **回归基线**(日常循环跑前三个即可,快):
 
@@ -132,7 +135,11 @@ curl -s localhost:8000/chat -H "X-API-Key: $KEY" -H "Content-Type: application/j
 
 ---
 
-## 6. RAG 知识库 [T20 重点 — 20.01]
+## 6. RAG 知识库 [T20 · T28]
+
+> **[T28] 前置:** Task 28 落地后为真实语义检索(`text-embedding-v3` + DashScope)。
+> 需配置 `QWEN_API_KEY`(或 `EMBEDDING_API_KEY`);`GET /api/rag/status` 的 `embedding_model` 应为 `text-embedding-v3`(非 `*(hash)` / `api-or-hash`)。
+> 6.1–6.4 在哈希向量下无法产出语义验收证据。
 
 页面: `http://localhost:8000/playground/rag.html`
 
@@ -153,15 +160,15 @@ curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 
 | # | 验证点 | 预期 |
 |---|--------|------|
-| 6.1 | init/sample | 返回示例 chunks 数 >0 |
-| 6.2 | upload/pdf | 文件入库,chunks 生成 |
-| 6.3 | search | top-k 返回,相关性合理 |
-| 6.4 | ask | 回答有引用来源 |
-| 6.5 | HyDE 开关 [T20] | `RAG_HYDE_ENABLED=true` 重启后,同问句 top-1 命中比 false 更准(用长问句/术语变体验证) |
-| 6.6 | ReRank 开关 [T20] | `RAG_RERANK_ENABLED=true` 后 top-1 与开关前对比,记录差异 |
+| 6.1 | init/sample [T28] | 返回示例 chunks 数 >0(真实 embedding 入库) |
+| 6.2 | upload/pdf [T28] | 文件入库,chunks 生成 |
+| 6.3 | search [T28] | top-k 返回;**「信息安全管理制度」top-1 须为 COMPLIANCE 相关**(语义硬验收) |
+| 6.4 | ask [T28] | 回答有引用来源 |
+| 6.5 | HyDE 开关 [T20][T28] | `RAG_HYDE_ENABLED=true` 重启后,同问句 top-1 命中比 false 更准(用长问句/术语变体验证) |
+| 6.6 | ReRank 开关 [T20][T28] | `RAG_RERANK_ENABLED=true` 后 top-1 与开关前对比,记录差异 |
 | 6.7 | reset | `DELETE /api/rag/reset` 清空,再 ask 走无知识路径 |
 
-**通过标准:** [T20] 6.5/6.6 记录开关前后 top-1 对比数据(留档,这是 20.01 的验收证据)。
+**通过标准:** [T28] 6.3 语义 top-1 过关;[T20] 6.5/6.6 记录开关前后 top-1 对比数据(留档)。
 
 ---
 
@@ -258,6 +265,7 @@ curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 | 编号 | 场景 | 现象 | 严重度 | 状态 |
 |------|------|------|--------|------|
 | GAP-01 | 7.1 Agent 页面 | examples/agent.html 调 `/api/agent/`,后端实际 `/agent/` → 404 | Important | ✅ 已修复(2026-08-01,页面 BASE 改 `/agent/`) |
+| GAP-02 | config.env | `MODEL_REGISTRY_JSON` 若写两行,dotenv 只认首行(local-7b 死行) | Minor | ✅ 已修(Task 28:合并为单行数组+文档警示) |
 | | | | | |
 
 严重度分级:Critical(数据/安全/不可用)→ 立即修;Important(功能不符预期)→ 列表给用户审核;Minor(体验/文案)→ 直接修。

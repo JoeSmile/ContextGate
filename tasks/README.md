@@ -7,7 +7,6 @@
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| `28-embedding-model.md` | 真实 Embedding 接入(text-embedding-v3, 768 维) | 进行中(2026-08-02,待 Cursor 实现) |
 | （无） | EVID-03 fixture 重录等见 `docs/EVIDENCE_PACK.md` | — |
 
 ## 完成情况
@@ -32,13 +31,14 @@
 | Task 25 | 证据包小修批(EVID 04–12) | `feat/task-25-evidence-fix` |
 | Task 26 | EVID-08 LLM 路径统一 mock/replay | `feat/task-26-llm-provider-unify` |
 | Task 27 | LLM Key 故障转移(候选链/429·401) | `feat/task-27-llm-key-failover` |
+| Task 28 | 真实 Embedding(text-embedding-v3,768) | `feat/task-28-embedding-model` |
 | SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
 
 ## 遗留验收(全部满足)
 
 - `make verify` — 品牌 10 词门禁全绿(含负向测试)
 - `make check` — ruff + mypy,102 files
-- `pytest` — 96 passed
+- `pytest` — 105 passed
 - `scripts/verify_schema.py` — 24 张表与 ORM 一致
 - `scripts/audit_consistency.py` — 7 维度全绿
 
