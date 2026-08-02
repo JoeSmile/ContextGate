@@ -59,11 +59,13 @@ uv run python scripts/audit_consistency.py   # 里程碑终检专用
 
 | 端点 | user | tenant_admin | auditor | super_admin |
 |------|------|--------------|---------|-------------|
-| `POST /chat` (chat:write) | ✓ | ✓ | ✗(若无 chat:write) | ✓ |
-| `GET /api/admin/api-keys` (admin:*) | ✗ | 本租户 | ✗ | ✓ |
+| `POST /chat` (chat:write) | ✓ | ✓ | ✗(无 chat:write) | ✓ |
+| `GET /api/admin/api-keys` (admin:*) | ✗ | ✗(tenant_admin 无 admin:*,实测 403) | ✗ | ✓ |
 | `POST /api/admin/approve` (admin:approve) | ✗ | ✓ | ✗ | ✓ |
-| `GET /api/audit/logs` (audit:read) | ✗ | 本租户 | ✓ 跨租户 | ✓ |
+| `GET /api/audit/logs` (audit:read) | ✗ | ✗(审计仅 auditor/super_admin,实测 403) | ✓ 跨租户 | ✓ |
 | `GET /api/audit/export` | 同上 | 同上 | ✓ | ✓ |
+
+> 2026-08-02 实测修正:tenant_admin 角色定义(ROLES)只有 chat:*/kb:*/admin:approve/admin:llm_key,无 admin:* 也无 audit:read — 审计数据仅 auditor/super_admin 可见,设计合理,原表有误。
 
 **验证方法:** 每个端点用 4 种角色的 key 各打一次,记录 200/401/403,与上表比对。
 **通过标准:** 无越权;auditor 只能读审计,不能写。
