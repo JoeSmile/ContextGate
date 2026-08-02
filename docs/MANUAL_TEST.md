@@ -153,8 +153,9 @@ KEY=你的seed_key
 BASE=localhost:8000/api/rag
 # 初始化示例知识库
 curl -s -X POST $BASE/init/sample -H "X-API-Key: $KEY"
-# 上传 PDF
-curl -s -X POST $BASE/upload/pdf -H "X-API-Key: $KEY" -F "file=@docs/COMPLIANCE.md"
+# 上传 PDF(注意: 必须是真实 PDF;.md 伪装会被 pypdf 解析失败。macOS 可用
+# `cupsfilter docs/COMPLIANCE.md > /tmp/c.pdf` 生成真实 PDF 再传)
+curl -s -X POST $BASE/upload/pdf -H "X-API-Key: $KEY" -F "file=@/tmp/c.pdf"
 # 检索
 curl -s "$BASE/search" -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
   -d '{"query":"信息安全管理制度","top_k":5}'
@@ -166,7 +167,7 @@ curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 | # | 验证点 | 预期 |
 |---|--------|------|
 | 6.1 | init/sample [T28] | 返回示例 chunks 数 >0(真实 embedding 入库) |
-| 6.2 | upload/pdf [T28] | 文件入库,chunks 生成 |
+| 6.2 | upload/pdf [T28] | 文件入库,chunks 生成(必须真实 PDF;`.md` 伪装会被 pypdf 解析失败) |
 | 6.3 | search [T28] | top-k 返回;**「信息安全管理制度」top-1 须为 COMPLIANCE 相关**(语义硬验收) |
 | 6.4 | ask [T28] | 回答有引用来源 |
 | 6.5 | HyDE 开关 [T20][T28] | `RAG_HYDE_ENABLED=true` 重启后,同问句 top-1 命中比 false 更准(用长问句/术语变体验证) |
