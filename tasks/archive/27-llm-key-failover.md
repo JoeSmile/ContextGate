@@ -1,8 +1,9 @@
 # Task 27: LLM API Key 故障转移(多 key 池 + 429/401 自动切换)
 
-> **状态:待执行(Cursor)**
-> **基线:main @ f071463;验收:make verify + make check + pytest 全绿(audit_consistency 批次收尾 Hermes 跑)**
+> **状态:✅ 完成(Cursor)**
+> **基线:main @ f071463;验收:make verify + make check + pytest 96 passed;alembic 004 已 upgrade**
 > **来源:Joe P0 清单「key auto-failover」+ 2026-08-02 设计讨论。存储层已就绪(llm_api_keys 本就多行多版本),本任务补齐:候选链 + 失败切换 + 冷却 + 健康摘除。**
+> **交付:** `004_key_failover` 迁移;`get_key_chain`/`mark_key_failed`/`clear_key_failure`;`key_failover.py`;`llm_client`+`LLMHarness._call_api` 429/401 切 key;`key_health` 自动摘除/恢复;`tests/test_key_failover.py`
 
 ## 27.01 存储:冷却字段 + 候选链
 
@@ -60,11 +61,11 @@
 
 ## 验收标准(Task 27 全部)
 
-- [ ] 27.01 迁移加列 + 候选链 + 冷却/摘除方法,get_key 兼容不破
-- [ ] 27.02 429/401 切 key 重试(≤3 次),5xx 不切走断路器;切换有审计
-- [ ] 27.03 健康检查自动摘除失效 key
-- [ ] 27.04 单测覆盖(桩模式,不连 PG)
-- [ ] `make verify` / `make check` / pytest 全绿
+- [x] 27.01 迁移加列 + 候选链 + 冷却/摘除方法,get_key 兼容不破
+- [x] 27.02 429/401 切 key 重试(≤3 次),5xx 不切走断路器;切换有审计
+- [x] 27.03 健康检查自动摘除失效 key
+- [x] 27.04 单测覆盖(桩模式,不连 PG)
+- [x] `make verify` / `make check` / pytest 全绿
 
 ## Cursor 会踩的坑
 
