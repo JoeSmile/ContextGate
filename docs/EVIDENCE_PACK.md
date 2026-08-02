@@ -43,6 +43,8 @@
 | EVID-07 | Important | POST /api/rag/init/sample 500 | `'KnowledgeBaseManager' object has no attribute 'add_document'` | loader 调 add_document(单数),manager 只有 add_documents(复数) | ✅ 已修复(实测 200,3 documents) |
 | EVID-08 | Important | RAG ask / agent chat / evaluation | 离线(replay)下失败:「RAG 需要可用的 LLM」「评估引擎未配置API_KEY」;agent/chat 返回「抱歉,我遇到了一些问题」 | 三条路径直接读 LLM_API_KEY,绕过 LLM_PROVIDER 抽象;agent 另有 FSM bug(见 EVID-14) | ✅ 已修复(Task 26 工厂 + EVID-14,三路径实测离线可跑) |
 | EVID-14 | Important | agent/chat 100% 失败 | 之前被「抱歉」吞掉;Task 26 后暴露:`Illegal session state transition: 'idle' → 'idle'` + `MemoryHub 无 consolidate` | FSM 初始态即 IDLE,`_lifecycle.py:60` 却调 transition(IDLE)(自迁移非法);legacy 路径调不存在的 consolidate | ✅ 已修复(删非法迁移 + 移除未实现调用,实测 success:true) |
+| EVID-16 | Important | 管线意图分析是玩具启发式 | `_analyze_intent` 在 LLM_MOCK 下只认 greeting/advice,其余全 default/0.5 → 所有请求路由到 best 档,三档路由从未生效,qwen 的 cheap 档是死的 | 管线没用 intent_service 规则分类器(/intent/detect 同源),用了个临时启发式 | ✅ 已修复(改走 detect_intent + 补 GREETING 意图枚举/规则,三档实测生效) |
+| EVID-17 | Critical | 多 provider 路由打错端点 | qwen key 被发到 deepseek 端点 → 400「只支持 deepseek-v4-pro/flash」 | `_env_fallback` 无视 provider 的 api_key_ref(QWEN_API_KEY)和 spec.base_url,一律用全局 LLM_API_KEY + LLM_BASE_URL | ✅ 已修复(fallback 改 spec 感知,实测 qwen→百炼 / deepseek→deepseek) |
 | EVID-10 | Important | GET /agent/memory/{uid} 500 | `object of type 'coroutine' has no len()` | agent_router 缺 `await`(backend/routers/agent.py:116;modules 副本同病) | ✅ 已修复(实测 200) |
 | EVID-11 | Minor | llm-keys 文档 | examples/README 写 {provider,api_key,model},实际 schema 是 {key_alias,api_key_plaintext} | 文档漂移 | ✅ 已修复(8e26bc2) |
 | EVID-12 | Important | POST /api/admin/api-keys 500 | 创建返回 SYS_001(created_at=None) | admin.py 裸 SQL INSERT 漏 is_active/created_at(与 EVID-01/02 同类) | ✅ 已修复(实测 200,新 key 可用) |
