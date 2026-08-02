@@ -7,7 +7,6 @@
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| `tasks/25-evidence-fix-batch.md` | 证据包小修批:EVID 05 注入变体 / 06 PII 顺序 / 07 init-sample / 10 await / 12 admin key / 04 cache 降级 / 11 文档 + 回归单测 | 待执行 |
 | `tasks/26-llm-provider-unify.md` | EVID-08:LLM 依赖路径(RAG ask/Agent/Eval)统一走 mock/record/replay 抽象 | ✅ 已拍板(方案 A)→ 待执行 |
 
 ## 完成情况
@@ -29,13 +28,14 @@
 | Task 21 | v1.2 企业级增强 | `feat/task-21-v1-2-enterprise` |
 | Task 22 | v1.2 收尾(测/策略/conversion) | `feat/task-21-v1-2-enterprise` |
 | Task 23 | v1.2 测试覆盖补齐 | `feat/task-21-v1-2-enterprise` |
+| Task 25 | 证据包小修批(EVID 04–12) | `feat/task-25-evidence-fix` |
 | SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
 
 ## 遗留验收(全部满足)
 
 - `make verify` — 品牌 10 词门禁全绿(含负向测试)
 - `make check` — ruff + mypy,102 files
-- `pytest` — 70 passed
+- `pytest` — 73 passed
 - `scripts/verify_schema.py` — 24 张表与 ORM 一致
 - `scripts/audit_consistency.py` — 7 维度全绿
 

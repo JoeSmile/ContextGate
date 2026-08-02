@@ -1,6 +1,6 @@
 # Task 25: 证据包小修批(EVID 04/05/06/07/10/11/12)
 
-> **状态:待执行(Cursor)**
+> **状态:✅ 完成(Cursor)**
 > **基线:main @ 1cb917a;验收:make verify + make check + pytest 全绿(audit_consistency 批次收尾 Hermes 跑)**
 > **来源:docs/EVIDENCE_PACK.md 实测发现的 7 项问题,根因均已核实。每项都是机械修复,无设计决策。**
 > **每个 Subtask 完成后 git commit,Signed-off-by: Joe**
@@ -81,15 +81,15 @@ r"无视.*(提示|指令|规则)",
 
 ## 验收标准(Task 25 全部)
 
-- [ ] 25.01 注入变体全 blocked(EVID-05 复测命令绿)
-- [ ] 25.02 身份证全遮且类型为 id_card
-- [ ] 25.03 init/sample 200
-- [ ] 25.04 agent/memory 200
-- [ ] 25.05 admin 创建 key 200 且新 key 可用
-- [ ] 25.06 cache 端点 503 + CACHE_001(非裸 500)
-- [ ] 25.07 文档与实际 schema 一致
-- [ ] 25.08 新增回归单测
-- [ ] `make verify` / `make check` / pytest 全绿
+- [x] 25.01 注入变体全 blocked(EVID-05 复测命令绿)
+- [x] 25.02 身份证全遮且类型为 id_card
+- [x] 25.03 init/sample 200
+- [x] 25.04 agent/memory 200
+- [x] 25.05 admin 创建 key 200 且新 key 可用
+- [x] 25.06 cache 端点 503 + CACHE_001(非裸 500)
+- [x] 25.07 文档与实际 schema 一致
+- [x] 25.08 新增回归单测
+- [x] `make verify` / `make check` / pytest 全绿(73 passed)
 
 ## Cursor 会踩的坑
 
