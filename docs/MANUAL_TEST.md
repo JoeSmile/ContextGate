@@ -301,6 +301,7 @@ RAG_QA_DEGRADE=1 RAG_QA_KEY=<key> ./scripts/rag_cache_qa.sh  # 含 redis 停启�
 | GAP-05 | 审批流 | `request_permission` INSERT 漏 created_at(表无默认)→ pending-requests 500,审批全挂 | Important | ✅ 已修(2026-08-02,INSERT 补 `now()`) |
 | GAP-06 | admin 列表 | api_keys 遗留行 is_active/created_at NULL → `GET /api/admin/api-keys` 500 | Minor | ✅ 已修(回填 + 查询 COALESCE) |
 | GAP-07 | 上传回显 | 多模态上传响应回显原始文件名(含 `../`) | Minor | ✅ 已修(改用 sanitize 后 safe_name) |
+| GAP-08 | LangFuse 观测 | span 平铺无树(parent=None)、延迟≈0、usage 全 0、cost 仅在 metadata;RAG/Agent/Eval 未挂 observe 不进 LangFuse | Important | ⏳ 待审(2026-08-02 实测;修复候选: Langfuse-LangGraph CallbackHandler / 手动 context 传递,见 examples/qa/LANGFUSE.md §6) |
 | | | | | |
 
 严重度分级:Critical(数据/安全/不可用)→ 立即修;Important(功能不符预期)→ 列表给用户审核;Minor(体验/文案)→ 直接修。
