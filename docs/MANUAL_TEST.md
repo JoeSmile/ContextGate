@@ -134,7 +134,7 @@ curl -s localhost:8000/chat -H "X-API-Key: $KEY" -H "Content-Type: application/j
 | # | 验证点 | 操作 | 预期 |
 |---|--------|------|------|
 | 5.1 | 类型列表 | `GET /intent/types` | 返回意图枚举,不含情感域意图 |
-| 5.2 | 企业问题命中 [T20] | `curl "localhost:8000/intent/detect?text=如何查询公司的信息安全管理制度"` | intent=knowledge_query(或 rag 类),**不得兜进 advice**;confidence ≥0.7 |
+| 5.2 | 企业问题命中 [T20] | `POST /intent/detect?text=如何查询公司的信息安全管理制度`(注意是 POST,文档旧版误写 GET) | intent=knowledge_query(或 rag 类),**不得兜进 advice**;confidence ≥0.7 |
 | 5.3 | 规则兜底 | 常见企业问句(报销流程/请假制度/设备报修)各测 3-5 条 | 全部命中合理意图,无 advice 残留 |
 | 5.4 | analyze 全量 | `POST /intent/analyze` 企业场景示例 | 返回意图+置信度+可选路由建议 |
 | 5.5 | 文案残留检查 | `grep -rn "睡不着\|失眠\|难过" backend/` | 0 命中 [T20] |
@@ -296,6 +296,11 @@ RAG_QA_DEGRADE=1 RAG_QA_KEY=<key> ./scripts/rag_cache_qa.sh  # 含 redis 停启�
 |------|------|------|--------|------|
 | GAP-01 | 7.1 Agent 页面 | examples/agent.html 调 `/api/agent/`,后端实际 `/agent/` → 404 | Important | ✅ 已修复(2026-08-01,页面 BASE 改 `/agent/`) |
 | GAP-02 | config.env | `MODEL_REGISTRY_JSON` 若写两行,dotenv 只认首行(local-7b 死行) | Minor | ✅ 已修(Task 28:合并为单行数组+文档警示) |
+| GAP-03 | 认证 | agent/chat、evaluation 全部端点无 key 可调用(返回 200 并执行/写库) | **Critical** | ✅ 已修(2026-08-02,全部挂 `chat:write`;11.1 全扫通过) |
+| GAP-04 | 审批流 | pending-requests/approve 按 `tenant_id` 过滤,super_admin("*")永远空/404 | Important | ✅ 已修(2026-08-02,补 cross-tenant 分支) |
+| GAP-05 | 审批流 | `request_permission` INSERT 漏 created_at(表无默认)→ pending-requests 500,审批全挂 | Important | ✅ 已修(2026-08-02,INSERT 补 `now()`) |
+| GAP-06 | admin 列表 | api_keys 遗留行 is_active/created_at NULL → `GET /api/admin/api-keys` 500 | Minor | ✅ 已修(回填 + 查询 COALESCE) |
+| GAP-07 | 上传回显 | 多模态上传响应回显原始文件名(含 `../`) | Minor | ✅ 已修(改用 sanitize 后 safe_name) |
 | | | | | |
 
 严重度分级:Critical(数据/安全/不可用)→ 立即修;Important(功能不符预期)→ 列表给用户审核;Minor(体验/文案)→ 直接修。
