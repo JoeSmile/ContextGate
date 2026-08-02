@@ -37,8 +37,8 @@
 ## 遗留验收(全部满足)
 
 - `make verify` — 品牌 10 词门禁全绿(含负向测试)
-- `make check` — ruff + mypy,102 files
-- `pytest` — 105 passed
+- `make check` — ruff + mypy,103 files
+- `pytest` — 107 passed
 - `scripts/verify_schema.py` — 24 张表与 ORM 一致
 - `scripts/audit_consistency.py` — 7 维度全绿
 
