@@ -7,6 +7,7 @@
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
+| `28-embedding-model.md` | 真实 Embedding 接入(text-embedding-v3, 768 维) | 进行中(2026-08-02,待 Cursor 实现) |
 | （无） | EVID-03 fixture 重录等见 `docs/EVIDENCE_PACK.md` | — |
 
 ## 完成情况
