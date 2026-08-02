@@ -1,8 +1,9 @@
 # Task 26: LLM 依赖路径统一 mock/replay 抽象 [EVID-08]
 
-> **状态:✅ 已拍板(方案 A,复用 harness)→ 待执行(Cursor)**
-> **基线:main @ 1cb917a;验收:make verify + make check + pytest 全绿**
+> **状态:✅ 完成(Cursor,方案 A)**
+> **基线:main @ af46833;验收:make verify + make check + pytest 82 passed**
 > **来源:docs/EVIDENCE_PACK.md EVID-08 — 内容计划「离线可复现」的硬前提。**
+> **交付:** `backend/core/harness/llm_client.py`(`get_llm_client`);RAG / AgentCore / EvaluationEngine 改走工厂;`tests/test_llm_client_factory.py`
 
 ## 背景
 
@@ -47,10 +48,10 @@ uv run pytest && make check
 
 ## 验收标准(Task 26 全部)
 
-- [ ] 26.01 方案拍板(A/B)
-- [ ] 26.02 三条路径离线可跑,确定性(同请求两次结果一致)
-- [ ] 证据包 §2 EVID-08 复测通过
-- [ ] `make verify` / `make check` / pytest 全绿
+- [x] 26.01 方案拍板(A/B)
+- [x] 26.02 三条路径离线可跑,确定性(同请求两次结果一致)
+- [x] 证据包 §2 EVID-08 复测通过(pytest 工厂覆盖;live curl 可在 `make run` + replay 下复验)
+- [x] `make verify` / `make check` / pytest 全绿
 
 ## Cursor 会踩的坑
 
