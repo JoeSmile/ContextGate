@@ -174,10 +174,23 @@ curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 | 6.7 | reset | `DELETE /api/rag/reset` + `X-API-Key` 清空,再 ask 走无知识路径 |
 | 6.8 | L1 缓存 [T29] | 同 query 连打 20 次:`cache_hit` 第 1 次 false,之后 true;延迟显著下降 |
 | 6.9 | epoch 失效 [T29] | upload 后同 query 立即 `cache_hit=false`(同租户 epoch) |
-| 6.10 | 限流 [T29] | 压测 miss → 结构化 `RATE_001` |
+| 6.10 | 限流 [T29] | 压测 miss → 结构化 `RATE_001`(HTTP 429) |
 | 6.11 | status.cache [T29] | `GET /api/rag/status` + key:含 `cache.hit_ratio`;`l1_entries`/`l2_entries` 为 Redis SCAN 基数(`entries_source=scan`) |
+| 6.12 | L2 缓存 [T29] | 同 query 3 次 `/search` → status 的 `l2_hit` +2 且 `l2_entries=1`;LangFuse 仅 1 个 embedding span |
+| 6.13 | PII 跳过 [T29] | ask 含身份证号 → 响应 `cache_hit=false` 且 redis `rag:a:*` 键数不变 |
+| 6.14 | 单飞锁 [T29] | 5 并发同 query(新问题)→ 恰 1 个 `cache_hit=false` + 4 个 true(仅 1 次 LLM) |
+| 6.15 | 审计联动 [T29] | `GET /api/audit/logs` 有 `rag.ask` 记录,input 前缀 `cache_hit=N|`;命中 cost=0 |
+| 6.16 | redis 降级 [T29] | `docker stop contextgate-redis-1` → ask 仍 200(静默降级)→ start 恢复 |
+| 6.17 | RAG 认证 [T29] | 不带 key 打 `/api/rag/ask` → 401 `AUTH_001`(9 端点均需 chat:write) |
 
-**通过标准:** [T28] 6.3 语义 top-1 过关;[T20] 6.5/6.6 记录开关前后 top-1 对比数据(留档);[T29] 6.8–6.11 缓存/限流行为符合预期。
+**一键脚本 [T29]:** 上述 6.8–6.14、6.16 已脚本化,证据自动留档:
+
+```bash
+RAG_QA_KEY=<user key> ./scripts/rag_cache_qa.sh            # 证据 → data/qa/rag_cache_qa_<ts>.log
+RAG_QA_DEGRADE=1 RAG_QA_KEY=<key> ./scripts/rag_cache_qa.sh  # 含 redis 停启降级项
+```
+
+**通过标准:** [T28] 6.3 语义 top-1 过关;[T20] 6.5/6.6 记录开关前后 top-1 对比数据(留档);[T29] 6.8–6.17 缓存/限流/PII/单飞/审计/降级/认证行为符合预期(可一键脚本复验)。
 
 ---
 
@@ -234,6 +247,9 @@ curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 | 10.3 | Prometheus | `curl localhost:8000/metrics` | 指标文本非空 |
 | 10.4 | 缓存统计 | `GET /performance/cache/stats` | hit/miss 计数合理 |
 | 10.5 | 清缓存 | `POST /performance/cache/clear` | 计数归零 |
+| 10.6 | RAG 缓存命中率 [T29] | `GET /api/rag/status` → `data.cache` | `hit_ratio` 随重复 query 上升;`l2_entries` 反映 embedding 复用 |
+| 10.7 | redis 键检查 [T29] | `docker exec contextgate-redis-1 redis-cli --scan --pattern 'rag:*'` | L1(`rag:a:*`)/L2(`rag:e:*`)/epoch(`rag:epoch:*`)键可见 |
+| 10.8 | 滑动 TTL [T29] | 命中后 `redis-cli ttl <l1_key>` 复查 | TTL 回到 ~3600(续期),且不超过 4h 上限 |
 
 ---
 
@@ -264,6 +280,7 @@ curl -s $BASE/ask -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 | 5 | 审计溯源 | audit logs 搜刚才的 trace_id | 全链路可审计,合规刚需 |
 | 6 | 成本治理 | admin llm-keys + (v1.2) cost-summary | 每笔调用成本可算,CIO 最关心 |
 | 7 | 可观测 | LangFuse UI span 树 | 出问题 30 秒定位到节点 |
+| 8 | 缓存降本 [T29] | 同一问题连问 3 次:第 1 次有响应延迟,第 2/3 次秒回 `cache_hit=true`;`/api/rag/status` 命中率上升 | 重复问题零成本——员工反复问同一制度不再烧钱 |
 
 **Demo 前置:** `LLM_PROVIDER=record make run` 先采一轮真实数据转 replay,避免现场波动;或直接 `make demo`。
 
