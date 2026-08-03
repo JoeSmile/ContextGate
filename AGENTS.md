@@ -52,6 +52,8 @@ auth_check → load_memory → rate_limiter → cache_check
 - `backend/pipeline/nodes/` — LangGraph 节点，每节点一个文件
 - `backend/core/auth/` — 认证 + 权限
 - `backend/core/memory_service.py` — 统一记忆存取（hot/warm/cold；Task 34）
+- `backend/core/redis_tools.py` — 共享 Redis（静默降级；Task 35）
+- `docs/CACHE.md` — 缓存语义与 key 规范
 - `backend/core/guardrails/` — 安全护栏
 - `backend/skills/builtin/` — Skill 自动发现
 - `backend/observability/` — LangFuse

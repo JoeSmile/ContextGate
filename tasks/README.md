@@ -13,7 +13,7 @@
 | [32-governance-deepening-roadmap.md](32-governance-deepening-roadmap.md) | 治理做透总纲（**V2.0 冻结**：预算/报表/护栏配置/不出域/样板间） | **⏸ 冻结待命**(grill 设计已保留,启动即用) |
 | ~~33~~ → [archive/33-chat-consolidation.md](archive/33-chat-consolidation.md) | Chat 旁路收口（V1.x 结构债） | **已完成(2026-08-03)** |
 | ~~34~~ → [archive/34-memory-unified-access.md](archive/34-memory-unified-access.md) | Memory 统一存取层（原 32.63） | **已完成(2026-08-03)** |
-| [35-cache-unified.md](35-cache-unified.md) | 缓存语义统一 + **V1.x 收尾**(journeys 实测/EVID-03) | **执行中 → V1.x 最后一站** |
+| [35-cache-unified.md](35-cache-unified.md) | 缓存语义统一✓ + **V1.x 收尾**(journeys/EVID-03) | **35.01–06✓ · 35.07–09 待** |
 
 ## 执行顺序(2026-08-04 修订:V1.x 做扎实,冻结 V2.0 新能力)
 
@@ -30,7 +30,7 @@
 | ✓ | **Task 30b**(叶子真实执行) | — | 已归档 → `archive/30b-leaf-real-execution.md` |
 | ✓ | **Task 31**(Agent 孤儿删除) | — | 已归档 → `archive/31-agent-orphan-consolidation.md` |
 | ✓ | **Task 34**(记忆统一层) | 31✓ | 已归档 → `archive/34-memory-unified-access.md` |
-| 4 | **Task 35**(缓存统一) | 31✓ / 34✓ | → `35-cache-unified.md`（35.04 后置；V1.x 最后一站） |
+| 4 | **Task 35**(缓存统一 + 收尾) | 31✓ / 34✓ | 缓存 35.01–06✓ → `docs/CACHE.md`；余 35.07–09 |
 | ✓ | **Task 33**(Chat 旁路收口) | — | 已归档 → `archive/33-chat-consolidation.md` |
 | 6 | **journeys 实测 + 修 bug** | 任意时 | 4 角色旅程;别扭点进 MANUAL_TEST §13 |
 | 7 | **EVID-03 fixture 重录** | — | replay fixture 脏数据重录 |

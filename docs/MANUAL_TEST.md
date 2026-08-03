@@ -249,11 +249,12 @@ RAG_QA_DEGRADE=1 RAG_QA_KEY=<key> ./scripts/rag_cache_qa.sh  # 含 redis 停启�
 | 10.1 | LangFuse trace | 浏览器开 `http://localhost:3001`,发一条 /chat | trace 树出现,节点 = 管线各阶段 |
 | 10.2 | span 明细 | 点开长路径 trace | 各节点耗时/输入输出可见 |
 | 10.3 | Prometheus | `curl localhost:8000/metrics` | 指标文本非空 |
-| 10.4 | 缓存统计 | `GET /performance/cache/stats` | hit/miss 计数合理 |
-| 10.5 | 清缓存 | `POST /performance/cache/clear` | 计数归零 |
+| 10.4 | 缓存统计 [T35] | `GET /performance/cache/stats` | 含 `hit_rate`；可选 `chat_epoch_default` |
+| 10.5 | 清缓存 [T35] | `POST /performance/cache/clear`（无 pattern 或 `*`） | 全部已知租户 `chat:epoch` bump；旧 `chat:v:*` 不再命中 |
 | 10.6 | RAG 缓存命中率 [T29] | `GET /api/rag/status` → `data.cache` | `hit_ratio` 随重复 query 上升;`l2_entries` 反映 embedding 复用 |
-| 10.7 | redis 键检查 [T29] | `docker exec contextgate-redis-1 redis-cli --scan --pattern 'rag:*'` | L1(`rag:a:*`)/L2(`rag:e:*`)/epoch(`rag:epoch:*`)键可见 |
+| 10.7 | redis 键检查 [T29/T35] | `redis-cli --scan --pattern 'rag:*'` / `'chat:*'` | RAG:`rag:a`/`rag:e`/`rag:epoch`；Chat:`chat:v`/`chat:epoch`/`chat:lock`（见 `docs/CACHE.md`） |
 | 10.8 | 滑动 TTL [T29] | 命中后 `redis-cli ttl <l1_key>` 复查 | TTL 回到 ~3600(续期),且不超过 4h 上限 |
+| 10.9 | redis 降级 [T35] | 停 redis 后再打依赖缓存的路径 | 业务仍 200（静默 miss），不得 500 |
 
 ---
 
