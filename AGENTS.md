@@ -1,6 +1,6 @@
 # ContextGate — 开发指引
 
-> **任务状态:见 `tasks/README.md`。** Task 30 阶段 1(测试 FE)已归档;`30b` / `31` 为当前 V1.x 队列。
+> **任务状态:见 `tasks/README.md`。** Task 30 阶段 1 / 30b / 31 已归档；当前 V1.x 队列见 README。
 > **历史批次与验收标准:`tasks/archive/`(仅供追溯)。**
 > **新任务:`tasks/README.md` 的"新任务怎么写"。**
 
