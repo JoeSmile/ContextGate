@@ -16,6 +16,7 @@
 | [35-cache-unified.md](35-cache-unified.md) | 缓存语义统一 + **V1.x 收尾**(journeys 实测/EVID-03) | **执行中 → V1.x 最后一站** |
 | ~~36~~ → [archive/36-redis-lifecycle-fix.md](archive/36-redis-lifecycle-fix.md) | Redis 共享客户端生命周期修复 | **已完成(2026-08-03)** |
 | ~~37~~ → [archive/37-prod-stack-cleanup.md](archive/37-prod-stack-cleanup.md) | 生产栈清理(nginx / ES 空壳 / grafana) | **已完成(2026-08-03)** |
+| [38-login-improve.md](38-login-improve.md) | 登录改造: 账号密码注册/登录(测试 FE + 后端账号体系) | **执行中**(写于 2026-08-04) |
 
 ## 执行顺序(2026-08-04 修订:V1.x 做扎实,冻结 V2.0 新能力)
 
