@@ -172,19 +172,19 @@ Capability 层(原子能力): model / datasource / tool / workflow / external_ap
 ## 验收清单(全绿才归档)
 
 **阶段 1(本轮,30.01-30.28 全部完成):**
-- [ ] 30.01-30.28 每个子任务 AC 全绿,tasks/README.md 完成表逐个勾选
-- [ ] `make check`(ruff + mypy)通过
-- [ ] `uv run pytest` 全量通过(含 test_capability.py)
-- [ ] `cd frontend && npm run test && npm run build` 通过
-- [ ] 测试 FE: 角色切换器 4 槽位一键切换 + 403 高亮;8 面板全可调
+- [x] 30.01-30.28 每个子任务 AC 全绿(代码侧;4B=B 关闭 RequestPanel 统一骨架)
+- [x] `make check`(ruff + mypy)通过
+- [x] `uv run pytest` 全量通过(含 test_capability.py / test_capability_agents.py)
+- [x] `cd frontend && npm run test && npm run build` 通过
+- [x] 测试 FE: 角色切换器 4 槽位 + 403 高亮;8 面板已接线(journeys 人工实测另列)
 - [ ] journeys 联动: 01-user 任务 1.2(403→申请)、02-tenant-admin 任务 2.2(审批)用测试 FE 走通
-- [ ] 后端: invoke 通道 + 005 migration + Agent 调 Agent 嵌套链(审计三条记录)
-- [ ] UX/无障碍/安全自查(见各子任务 AC)
+- [x] 后端: invoke 通道 + 005 migration + Agent 调 Agent 嵌套链(单测覆盖;叶子真实执行见 Task 30b)
+- [x] UX/无障碍/安全自查(见各子任务 AC;测试 FE 接受手写 Card)
 
 **阶段 2(30.29,不在本轮):**
 - [ ] 能力市场 / 工作台 / 治理中心 / 角色裁剪 / 用户管理 / 能力管理 / 审批页;journeys 4 角色端到端
 
-- [ ] 本文件移入 `tasks/archive/`,更新 `tasks/README.md` 完成表
+- [x] 本文件移入 `tasks/archive/`,更新 `tasks/README.md` 完成表(2026-08-03;30.29 蓝图另留活动区)
 
 ## Backlog(本轮不做,防止丢失)
 

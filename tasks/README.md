@@ -1,51 +1,60 @@
 # ContextGate — 改造任务状态
 
 > **v1.0 全部完成(2026-08-01)** · **v1.1/v1.2 完成** · **v1.2 follow-up 完成**
-> 19 个 Task · 89 个 Subtask · 8 个 Batch · 1 个独立批次(情绪子系统拆除),全部实现并验证通过。
+> **Task 30 阶段 1(30.01–30.28) 已归档(2026-08-03)** · 19 个历史 Task 见 `archive/`
 
 ## 活动任务
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| _(无)_ | — | — |
+| [30b-leaf-real-execution.md](30b-leaf-real-execution.md) | 叶子能力真实执行(替换 stub) | 待执行(V1.x 收口) |
+| [30/30.29-product-fe.md](30/30.29-product-fe.md) | 产品 FE 蓝图 | **不在本轮**(实测后启动) |
+| [31-agent-orphan-consolidation.md](31-agent-orphan-consolidation.md) | Agent 孤儿副本收口（结构债 1a） | 待执行（已拍板） |
+| [32-governance-deepening-roadmap.md](32-governance-deepening-roadmap.md) | 治理做透改造总纲（V2.0 新能力） | **冻结待命** |
+| [33-chat-consolidation.md](33-chat-consolidation.md) | Chat 旁路收口（V1.x 结构债） | 待执行(序 5) |
+
+## 执行顺序(2026-08-04 修订:V1.x 做扎实,冻结 V2.0 新能力)
+
+> **范围决策(2026-08-04, Joe 拍板):** 先把 V1.x 做扎实,**不引入新功能**。
+> 分界线: **修"代码已经烂了"的 = V1.x 做;造"客户要付费的" = V2.0 冻结。**
+> - V1.x 做: Task 30 收尾✓ / **30b 叶子真实执行** / Task 31(孤儿删除)/ **记忆统一层 + 缓存统一**/
+>   Task 33(Chat 旁路收口)/ journeys 实测修 bug / EVID-03 fixture 重录
+> - V2.0 冻结(设计已落盘 32 文件,不动工): 预算三级语义/两本账/审批放行、
+>   合规 Excel/脱敏/留痕、命中率指标、护栏配置化、不出域、样板间、30.29 产品 FE
+
+| 序 | 任务 | 依赖 | 说明 |
+|----|------|------|------|
+| ✓ | **Task 30 阶段 1**(30.01-30.28) | — | 已归档 → `archive/30-capability-hub-frontend.md` + `archive/30/` |
+| 1 | **Task 30b**(叶子真实执行) | 30 阶段 1 | rag-ask / contextgate-chat 接真实 invoke,关 stub 穿帮 |
+| 2 | **Task 31**(Agent 孤儿删除) | 无 | 结构债清理,删 modules/agent 副本,留 protocol |
+| 3 | **记忆统一层**(32.63 结构债部分) | 31 后 agent 路径干净 | MemoryHub 持久化 / cold_memories / 僵尸表 / 统一存取层 |
+| 4 | **缓存统一**(32.64) | 31 后 | 删 ICacheService 空壳 / 合并惰性连接 / RAG 模式推广 |
+| 5 | **Task 33**(Chat 旁路收口) | 30 后 | /enhanced-chat、/streaming 标 deprecated |
+| 6 | **journeys 实测 + 修 bug** | 任意时 | 4 角色旅程;别扭点进 MANUAL_TEST §13 |
+| 7 | **EVID-03 fixture 重录** | — | replay fixture 脏数据重录 |
+| ⏸ | **Task 32 V2.0 部分(冻结待命)** | V1.x 全绿 + 证据包 | 预算/报表/护栏配置/命中率/不出域/样板间 |
+| ⏸ | **Task 30.29 产品 FE** | 测试 FE 实测后 | 能力市场/工作台/治理中心 |
+
+**并行规则:** 30b 与 31 可并行;记忆统一层严格在 31 后;缓存统一与记忆层可并行;journeys 实测随时可跑。
 
 ## 完成情况
 
 | 批次 | 内容 | 完成提交(节选) |
 |------|------|----------------|
-| Batch 1 | Rebranding + pgvector 迁移 | `1c2d9ac`, `e3b2548` |
-| Batch 2 | 认证 + RBAC0 + 请求签名 | `1eee7d6` |
-| Batch 3 | 多租户 + 审计 + 健康检查 | `11dffd9`, `28ad90f` |
-| Batch 4 | LangGraph 管线(10 节点) | `59d5d16` |
-| Batch 5a | 可观测 + 缓存 + 护栏 + 上传 + 断路器 | `fd3c496` |
-| Batch 5b | 成本治理 + 模型路由 + Skill | `c58205f` |
-| Batch 6 | 依赖锁定 + Seed + Mock | `5b43a25` |
-| Batch 7 | Docker + CI/CD + 生产部署 | `d8bf458` |
-| Batch 8 | Ownership + LLM Key 治理 | `116047f`, `070b16c` |
-| Batch 10 | 情绪子系统拆除 | `5bfeadd` → `9d646ce`(8 commits) |
-| Task 19 | 性能瓶颈消除 | `9d5f493` |
-| Task 20 | v1.1 加固与打磨 | `feat/task-20-v1-1-hardening` |
-| Task 21 | v1.2 企业级增强 | `feat/task-21-v1-2-enterprise` |
-| Task 22 | v1.2 收尾(测/策略/conversion) | `feat/task-21-v1-2-enterprise` |
-| Task 23 | v1.2 测试覆盖补齐 | `feat/task-21-v1-2-enterprise` |
-| Task 25 | 证据包小修批(EVID 04–12) | `feat/task-25-evidence-fix` |
-| Task 26 | EVID-08 LLM 路径统一 mock/replay | `feat/task-26-llm-provider-unify` |
-| Task 27 | LLM Key 故障转移(候选链/429·401) | `feat/task-27-llm-key-failover` |
-| Task 28 | 真实 Embedding(text-embedding-v3,768) | `feat/task-28-embedding-model` |
-| Task 29 | RAG 查询缓存(L1 答案 + L2 embedding) | `feat/task-29-rag-cache` |
-| SSE 系列 | 04.11 / 07.07e / 09.04(从 Task 02 延期) | `backend/pipeline/router.py` `/chat/streaming` 已实测:200 + 206 个 SSE 事件(2026-08-01) |
+| Batch 1–8 / Task 19–29 | 见历史 | `tasks/archive/` |
+| **Task 30 阶段 1** | Capability Hub + 测试 FE(30.01–30.28) | `feat/task-30-capability-hub` |
 
 ## 遗留验收(全部满足)
 
 - `make verify` — 品牌 10 词门禁全绿(含负向测试)
-- `make check` — ruff + mypy,103 files
-- `pytest` — 116 passed
-- `scripts/verify_schema.py` — 24 张表与 ORM 一致
-- `scripts/audit_consistency.py` — 7 维度全绿
+- `make check` — ruff + mypy
+- `pytest` — 全绿(含 capability)
+- `cd frontend && npm run test && npm run build`
 
 ## 历史文档
 
 完成批次的详细计划、代码骨架、验收标准在 `tasks/archive/`,仅供追溯,不再执行。
+Task 30 子任务: `tasks/archive/30/`。
 
 ## 新任务怎么写
 
