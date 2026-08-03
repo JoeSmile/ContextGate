@@ -105,12 +105,12 @@ backend/modules/agent/
 
 ## AC
 
-- [ ] `backend/modules/agent/core|routers|services|models` 目录不存在
-- [ ] `backend/modules/agent/protocol/` 仍在，且真源可 import MCP 类型
-- [ ] `uv run python -c "from backend.agent import get_agent_core, AgentCore; print(get_agent_core)"` 成功
-- [ ] `uv run python -c "from backend.modules.agent.protocol.mcp import MCPContext"` 成功
-- [ ] `uv run python -c "from backend.modules.agent import AgentCore"` **失败**（或不再导出——预期 ImpError / 无该名）
-- [ ] `uv run ruff check backend/ scripts/` 通过
+- [x] `backend/modules/agent/core|routers|services|models` 目录不存在
+- [x] `backend/modules/agent/protocol/` 仍在，且真源可 import MCP 类型
+- [x] `uv run python -c "from backend.agent import get_agent_core, AgentCore; print(get_agent_core)"` 成功
+- [x] `uv run python -c "from backend.modules.agent.protocol.mcp import MCPContext"` 成功
+- [x] `uv run python -c "from backend.modules.agent import AgentCore"` **失败**（或不再导出——预期 ImpError / 无该名）
+- [x] `uv run ruff check backend/ scripts/` 通过
 - [ ] 已 commit: `refactor: remove orphan modules/agent duplicate of backend.agent`
 
 ---
