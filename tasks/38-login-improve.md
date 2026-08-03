@@ -16,7 +16,7 @@
 | D4 | 注册开放 | `APP_ENV∈{dev,test,demo}` 开放注册;prod 下注册端点返回 403(预留 admin 邀请制) | 测试 FE 是 dev 工具,开放注册合理;企业场景注册必须受控 |
 | D5 | 注册字段 | username(唯一,小写归一)/ password(≥8)/ confirm_password(FE 校验)/ display_name(可选)/ role(仅 dev 显示,默认 user);tenant 固定 `acme` | 测试 FE 语境;4 角色注册即可替代手工配 key |
 | D8 | users 表(2026-08-04 已落地) | **扩展既有 users 表**(001 迁移创建,memory_hub 在用),不新建:006_users 迁移加 `password_hash`(bcrypt)/`display_name`/`tenant_id`/`role` + username 唯一索引;`models.py User` 已加对应列;`seed_api_keys.py` 已 upsert 5 个测试账号(密码统一 `123456`) | 否则与 memory_hub 的 User 模型/001 表冲突;账号体系列直接长在既有表上 |
-| D6 | 防爆破(P0) | 登录失败计数:同 username 5 次/5 分钟 → 429(复用 `redis_tools`,降级内存 dict) | 安全 P0,账号体系一出生就要带限流 |
+| D6 | 防爆破(P0) | 登录失败 + 注册探测计数:同 username 各 5 次/5 分钟 → 429(复用 `redis_tools`,降级内存 dict) | 安全 P0,账号体系一出生就要带限流 |
 | D7 | 审计 | register/login 事件写 `audit_logs`(action=`auth.register`/`auth.login`,复用 `backend/core/audit.py:log_audit`) | 审计联动是项目红线,账号事件必须留痕 |
 
 **关键机制:** 注册/登录成功后返回 `cg_...` key(明文仅一次),FE 按账号 role 存入对应槽位
@@ -37,8 +37,10 @@
      403(prod)/ 200 {api_key, role, tenant_id}(创建 users 行 + api_keys 行,tenant=acme,created_by='register')。
      明文 key 仅此一次返回;`log_audit(auth.register)`。
    - `POST /api/auth/login` {username, password} → 401(密码错)/ 429(5 次/5min)/ 200 {api_key, role, tenant_id}。
-     登录成功复用该用户 active key(无则新建),`log_audit(auth.login)`。
-   - 失败计数:redis(有)→ 内存 dict(降级),键 `auth:fail:{username}`,5 次/5 分钟窗口。
+     登录成功**轮换**该用户 active key(停用旧 key → 签发新 `cg_` 明文返回一次;
+     因 api_keys 仅存 SHA256,无法真正「复用」明文),`log_audit(auth.login)`。
+   - 失败/注册计数:redis(有)→ 内存 dict(降级);登录键 `auth:fail:{username}`,
+     注册键 `auth:reg:{username}`,各 5 次/5 分钟窗口。
    - ⚠️ users 表身份列:user_id 与 username 并存,seed 里两者相同;登录按 `username` 查,
      `memory_hub` 仍按 `user_id` 查(兼容)。
 3. `backend/app.py` 挂载:`_lazy_include(app, "backend.routers.auth", "router", label="账号认证", required=True)`。
@@ -49,7 +51,8 @@
 **AC(自带):**
 - [ ] 注册成功返回 cg_ key(仅一次),DB 中 password_hash 为 bcrypt 密文(非明文)
 - [ ] 重复 username 注册 → 409;密码 <8 位 → 422;prod env 注册 → 403
-- [ ] 登录成功返回该用户 active key;错误密码 → 401;同 username 错 5 次 → 429
+- [ ] 登录成功轮换并返回新 cg_ key;错误密码 → 401;同 username 错 5 次 → 429
+- [ ] 同 username 注册探测 5 次/5min → 429
 - [ ] `audit_logs` 出现 `auth.register` / `auth.login` 记录
 
 **验证:**

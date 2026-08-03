@@ -98,7 +98,7 @@ uv run python scripts/audit_consistency.py   # 里程碑终检专用
 | 1.6 | 登录页填 **错误格式 key** | 提示 `health_failed:401` 之类,不进入控制台 |
 | 1.7 | 登录后头部 | 右上角色徽章 = 当前槽位;左上角 ContextGate + env 角标(dev 为灰) |
 | 1.8 | 角色切换器展开 | 4 角色各标「已配置/未配置」,当前角色标「当前」 |
-| 1.9 | 注册+登录冒烟 [T38] | `/register` 注册新账号(密码 ≥8)→ 自动登录进 Chat 面板,右上角徽章 = 注册所选 role;再 `/logout` → `/login` 用刚注册的 username/password 登录 → 进 Chat 面板 |
+| 1.9 | 注册+登录冒烟 [T38] | `/register` 注册新账号(密码 ≥8)→ 自动登录进 Chat 面板,右上角徽章 = 注册所选 role;再点「退出并清空槽位」→ `/login` 用刚注册的 username/password 登录 → 进 Chat 面板 |
 
 ---
 
