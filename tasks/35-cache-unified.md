@@ -34,3 +34,4 @@ cd frontend && npm run test && npm run build
 # journeys 4 份剧本实测通过,别扭点已修或入 §13
 # EVID-03 重录完成,demo 截图干净
 ```
+**Important(2026-08-03 35.04):** 1A 清缓存 `*` bump 全部租户 epoch；2B write_turn 不 bump（短 TTL + 遗忘/清缓存失效）。

@@ -23,4 +23,4 @@
 |------|------|
 | RAG 上传/重置知识 | `bump_epoch(tenant)`（`backend.modules.rag.cache`） |
 | 用户遗忘权 / 清 chat 缓存 | `CacheManager.bump_epoch(tenant)` |
-| 运维清缓存 | `POST /performance/cache/clear`（`*` → bump epoch） |
+| 运维清缓存 | `POST /performance/cache/clear`（`*` → SCAN 并 bump **全部** `chat:epoch`/`chat:v` 租户） |
