@@ -47,6 +47,19 @@ make verify && make check && uv run pytest
 uv run python scripts/audit_consistency.py   # 里程碑终检专用
 ```
 
+**数据原则(2026-08-04, Joe 拍板 —— 不影响手动测试流程,只定数据姿势):**
+
+1. **真实数据优先**: 手动测试默认用真实数据。RAG 有真实文档就查真实文档;
+   LLM 想验证真实输出用 `LLM_PROVIDER=record make run`(采一轮)或 openai。
+   测试流程本身不变(§1-§14 照走),变的只是"数据从哪来"。
+2. **不造演示数据**: 不预置 demo 数据、不为了截图好看重录 fixture 美化输出。
+   知识库为空 → 页面显示空态/提示,不是塞样例。实事求是: 没有就是没有。
+3. **env 可控降级例外**: `LLM_PROVIDER=replay`(离线回放)与 `LEAF_STUB_MODE=true`
+   是显式降级开关,仅用于离线开发/无 key 环境;其输出为"录制回放/演示 stub",
+   **非真实响应**,文档与界面需标注清楚,不得冒充真实数据。
+4. **遗留 fixture 标注**: 现有 replay fixture 含历史测试残留(EVID-03)——保留,
+   但文档注明"测试产物";真实数据由 record 采集,天然干净。
+
 ---
 
 ## 1. 冒烟 — 系统存活
