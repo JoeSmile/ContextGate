@@ -47,6 +47,11 @@ auth_check → load_memory → rate_limiter → cache_check
 认证: X-API-Key Header → SHA256 → api_keys 表
 权限: `@require_permission("chat:write")` Depends
 
+例外（Capability Hub，拍板保留）: `/api/capabilities` 与 `/api/agents` 用
+`Depends(verify_api_key)` + 每条 capability 的 `spec.permission` / 租户可见性闸门
+（`capability_visible_to` / `_check_permission`），不套固定 `@require_permission`，
+因为权限串按能力动态变化。
+
 ## 目录约定
 
 - `backend/pipeline/nodes/` — LangGraph 节点，每节点一个文件
