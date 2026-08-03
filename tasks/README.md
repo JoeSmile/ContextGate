@@ -9,7 +9,7 @@
 |------|------|------|
 | [30b-leaf-real-execution.md](30b-leaf-real-execution.md) | 叶子能力真实执行(替换 stub) | 待执行(V1.x 收口) |
 | [30/30.29-product-fe.md](30/30.29-product-fe.md) | 产品 FE 蓝图 | **不在本轮**(实测后启动) |
-| [31-agent-orphan-consolidation.md](31-agent-orphan-consolidation.md) | Agent 孤儿副本收口（结构债 1a） | 待执行（已拍板） |
+| ~~31~~ → [archive/31-agent-orphan-consolidation.md](archive/31-agent-orphan-consolidation.md) | Agent 孤儿副本收口（结构债 1a） | **已完成(2026-08-03)** |
 | [32-governance-deepening-roadmap.md](32-governance-deepening-roadmap.md) | 治理做透改造总纲（V2.0 新能力） | **冻结待命** |
 | [33-chat-consolidation.md](33-chat-consolidation.md) | Chat 旁路收口（V1.x 结构债） | 待执行(序 5) |
 
@@ -26,7 +26,7 @@
 |----|------|------|------|
 | ✓ | **Task 30 阶段 1**(30.01-30.28) | — | 已归档 → `archive/30-capability-hub-frontend.md` + `archive/30/` |
 | 1 | **Task 30b**(叶子真实执行) | 30 阶段 1 | rag-ask / contextgate-chat 接真实 invoke,关 stub 穿帮 |
-| 2 | **Task 31**(Agent 孤儿删除) | 无 | 结构债清理,删 modules/agent 副本,留 protocol |
+| ✓ | **Task 31**(Agent 孤儿删除) | — | 已归档 → `archive/31-agent-orphan-consolidation.md` |
 | 3 | **记忆统一层**(32.63 结构债部分) | 31 后 agent 路径干净 | MemoryHub 持久化 / cold_memories / 僵尸表 / 统一存取层 |
 | 4 | **缓存统一**(32.64) | 31 后 | 删 ICacheService 空壳 / 合并惰性连接 / RAG 模式推广 |
 | 5 | **Task 33**(Chat 旁路收口) | 30 后 | /enhanced-chat、/streaming 标 deprecated |
@@ -43,6 +43,7 @@
 |------|------|----------------|
 | Batch 1–8 / Task 19–29 | 见历史 | `tasks/archive/` |
 | **Task 30 阶段 1** | Capability Hub + 测试 FE(30.01–30.28) | `feat/task-30-capability-hub` |
+| **Task 31** | Agent 孤儿副本收口 | `feat/task-30-capability-hub` |
 
 ## 遗留验收(全部满足)
 

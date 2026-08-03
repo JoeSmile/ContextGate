@@ -1,6 +1,6 @@
 # Task 31: Agent 孤儿副本收口（结构债 Batch 1a）
 
-> **状态: 31.01–31.02 完成；31.03/31.04 收尾中。**
+> **状态: 已完成(2026-08-03)。** 孤儿树已删；仅保留 ``protocol``。
 > **拍板(2026-08-03, Joe):**
 > 1. 方案 **A**（薄兼容、删孤儿；真源 = `backend/agent/`）
 > 2. **本轮只做 Agent 孤儿删除（1a）**；Chat 旁路（1b）与文档/QA 收口（1c）另开 Task 32+
@@ -133,7 +133,7 @@ backend/modules/agent/
 
 - [x] 活跃文档不再教用户 `from backend.modules.agent.core...` 取 AgentCore
 - [x] 30.24 注记与仓库现状一致（活跃代码注释已更新；`tasks/archive/30/30.24` 历史原文不改）
-- [ ] 已 commit: `docs: align agent entrypoint after orphan removal`
+- [x] 已 commit: `docs: align agent entrypoint after orphan removal`
 
 ---
 
@@ -162,8 +162,8 @@ LLM_MOCK=true uv run pytest tests/ -q --tb=short
 
 ## AC
 
-- [ ] 上列命令全绿
-- [ ] `rg -n "modules\.agent\.core|modules/agent/core" --glob '*.py'` 零命中（业务代码）
+- [x] 上列命令全绿
+- [x] `rg -n "modules\.agent\.core|modules/agent/core" --glob '*.py'` 零命中（业务代码）
 
 ---
 
