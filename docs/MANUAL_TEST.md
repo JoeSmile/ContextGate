@@ -328,6 +328,7 @@ RAG_QA_DEGRADE=1 RAG_QA_KEY=<key> ./scripts/rag_cache_qa.sh  # 含 redis 停启�
 /agent/chat, /agent/memory/{uid}, /agent/tools, /agent/followup, /agent/history/{uid}
 /evaluation/evaluate|batch|compare-prompts|statistics|report/generate
 /memory/users/{uid}/memories, /memory/users/{uid}/profile
+DELETE /memory/users/{uid}/memories — 遗忘权(tenant_admin|super_admin + X-API-Key；本租户；chat 脱敏不删行)
 /feedback, /personalization, /performance
 /enhanced-chat, /streaming      — **deprecated** → 请用 `/chat`、`/chat/streaming`（及 `/memory/*`、`/agent/*`）
 /health, /system/info, /metrics, /docs, /playground/<page>.html
