@@ -47,6 +47,7 @@ curl -s -N -X POST http://localhost:8000/api/agents/vendor-risk-agent/invoke \
 - `seed_capabilities.py`: 叶子加 `executor`
 - 测试: tool model/rag 路径 + stub 回归；agent 链测显式开 stub 模式
 - **运维:** 已有库需重跑 `uv run python scripts/seed_capabilities.py` 写入 `executor`
+- **Important 拍板(2026-08-03):** **A** — 不按 id 推断 executor；依赖 seed 覆盖 spec
 
 ## 注意
 
