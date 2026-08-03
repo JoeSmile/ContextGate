@@ -33,4 +33,5 @@
 | 旁路 | `EnhancedMemoryManager` / `UserProfileBuilder`（仅 enhanced-chat） | 34.01 已改走 user_memories |
 | 僵尸 | `MemoryItem` / `UserProfileDB`（`database/models.py`） | **仅 ORM 保留**；业务零读写 |
 
-**Important 关联:** Task 35 拍板 1A/2A — 先做 34，缓存 35.04 后置。
+**Important 关联:** Task 35 拍板 1A/2A — 先做 34，缓存 35.04 后置。  
+**Important A(2026-08-03):** AgentCore / AgentService / `/agent` / Capability 门面透传 `tenant_id` → MemoryHub。
