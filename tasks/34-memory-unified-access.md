@@ -35,3 +35,4 @@
 
 **Important 关联:** Task 35 拍板 1A/2A — 先做 34，缓存 35.04 后置。  
 **Important A(2026-08-03):** AgentCore / AgentService / `/agent` / Capability 门面透传 `tenant_id` → MemoryHub。
+**Important(2026-08-03 34.06):** 1A 单删不级联；2A 遗忘权仅 tenant_admin/super_admin且 scoped 到调用方 tenant_id；3B 风格数值夹紧，emoji 仍可读配置。
