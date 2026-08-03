@@ -164,6 +164,10 @@ Capability 层(原子能力): model / datasource / tool / workflow / external_ap
 >
 > 2026-08-02 第五次(粒度, Joe 拍板): **拆为 29 个子任务,每个独立文件 + AC + commit**。本文件为总纲索引,
 > 具体内容在 tasks/30/*.md。Cursor 按 30.01→30.28 顺序逐个完成,每步跑独立验证 + 勾 AC。
+>
+> 2026-08-03(收尾评审 4B, Joe 拍板 **B**): 测试 FE **接受各面板手写 Card 现状**,关闭
+> 「RequestPanel 统一骨架」要求——不阻塞 30.28 归档。产品 FE(30.29)若需统一壳再另开
+> `PanelShell` / 扩展 RequestPanel,不在本轮强行套单表单组件。
 
 ## 验收清单(全绿才归档)
 
