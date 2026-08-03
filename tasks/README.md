@@ -12,12 +12,14 @@
 | ~~31~~ → [archive/31-agent-orphan-consolidation.md](archive/31-agent-orphan-consolidation.md) | Agent 孤儿副本收口（结构债 1a） | **已完成(2026-08-03)** |
 | [32-governance-deepening-roadmap.md](32-governance-deepening-roadmap.md) | 治理做透改造总纲（V2.0 新能力） | **冻结待命** |
 | ~~33~~ → [archive/33-chat-consolidation.md](archive/33-chat-consolidation.md) | Chat 旁路收口（V1.x 结构债） | **已完成(2026-08-03)** |
+| [34-memory-unified-access.md](34-memory-unified-access.md) | Memory 统一存取层（原 32.63） | 待执行 |
+| [35-cache-unified.md](35-cache-unified.md) | 缓存语义统一（原 32.64） | 执行中(35.01–35.03) |
 
 ## 执行顺序(2026-08-04 修订:V1.x 做扎实,冻结 V2.0 新能力)
 
 > **范围决策(2026-08-04, Joe 拍板):** 先把 V1.x 做扎实,**不引入新功能**。
 > 分界线: **修"代码已经烂了"的 = V1.x 做;造"客户要付费的" = V2.0 冻结。**
-> - V1.x 做: Task 30 收尾✓ / 30b✓ / Task 31✓ / **记忆统一层 + 缓存统一**/
+> - V1.x 做: Task 30 收尾✓ / 30b✓ / Task 31✓ / **Task 34 记忆 + Task 35 缓存**/
 >   Task 33✓ / journeys 实测修 bug / EVID-03 fixture 重录
 > - V2.0 冻结(设计已落盘 32 文件,不动工): 预算三级语义/两本账/审批放行、
 >   合规 Excel/脱敏/留痕、命中率指标、护栏配置化、不出域、样板间、30.29 产品 FE
@@ -27,8 +29,8 @@
 | ✓ | **Task 30 阶段 1**(30.01-30.28) | — | 已归档 → `archive/30-capability-hub-frontend.md` + `archive/30/` |
 | ✓ | **Task 30b**(叶子真实执行) | — | 已归档 → `archive/30b-leaf-real-execution.md` |
 | ✓ | **Task 31**(Agent 孤儿删除) | — | 已归档 → `archive/31-agent-orphan-consolidation.md` |
-| 3 | **记忆统一层**(32.63 结构债部分) | 31 后 agent 路径干净 | MemoryHub 持久化 / cold_memories / 僵尸表 / 统一存取层 |
-| 4 | **缓存统一**(32.64) | 31 后 | 删 ICacheService 空壳 / 合并惰性连接 / RAG 模式推广 |
+| 3 | **Task 34**(记忆统一层) | 31✓ | → `34-memory-unified-access.md` |
+| 4 | **Task 35**(缓存统一) | 31✓ | → `35-cache-unified.md`（35.01–03 进行中） |
 | ✓ | **Task 33**(Chat 旁路收口) | — | 已归档 → `archive/33-chat-consolidation.md` |
 | 6 | **journeys 实测 + 修 bug** | 任意时 | 4 角色旅程;别扭点进 MANUAL_TEST §13 |
 | 7 | **EVID-03 fixture 重录** | — | replay fixture 脏数据重录 |
