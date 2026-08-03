@@ -11,9 +11,14 @@
 | 35.01 | 删除 `ICacheService` + `CacheServiceFactory` + `get_cache_service` | ✓ |
 | 35.02 | 新建 `backend/core/redis_tools.py`（sync+async 惰性连接、静默降级） | ✓ |
 | 35.03 | RAG `cache.py` / PerformanceOptimizer 改用 redis_tools | ✓ |
-| 35.04 | key 前缀规范文档 + CacheManager 单飞/epoch（可选增量） | 待 |
+| 35.04 | key 前缀规范文档 + CacheManager 单飞/epoch（可选增量） | **后置**(2026-08-03 拍板 2A：先 Task 34) |
 | 35.05 | 单测：redis 挂降级、单飞、epoch | ✓（redis_tools + 既有 rag_cache） |
 | 35.06 | 文档归档 | 待 |
+
+## Important 拍板(2026-08-03)
+
+1. **A** — `PerformanceOptimizer.close()` 只清实例引用，不关共享 async Redis
+2. **A** — 先 Task 34；35.04 CacheManager 单飞/epoch 后置
 
 ## 验收
 
