@@ -1,12 +1,15 @@
-# ContextGate 战略档案(Strategy)
+# NexusAI 战略档案(Strategy)
 
 > 更新:2026-08-02。用途:把讨论过的战略结论固化下来 —— 护城河、生存率、求职打法、行动优先级。
 > 这是「脑子里的东西文档化」的第一步:先记录结论,后续再补 ADR(架构决策)与 Playbook(踩坑/合规/方法论)。
 
 ## 一句话定位
 
-**ContextGate 是 LLM 治理层,不是业务应用层。** 战略 = 治理层做透 + 垂直场景做深,不横铺功能。
+**NexusAI 是 LLM 治理层,不是业务应用层。** 战略 = 治理层做透 + 垂直场景做深,不横铺功能。
 (详见 `docs/COMPETITIVE_ANALYSIS.md` 与 `docs/V2_PROPOSAL.md`)
+
+**市场定位:NexusAI = 企业 AI 中台。** 企业都有业务中台/数据中台,缺的是 AI 中台——统一入口调企业 AI 能力,能力由 IT 编排,数据接内部 OA/RAG,治理平台兜底。
+治理层是战略本质,AI 中台是市场定位,两者兼容;详见 `docs/strategy/AI_MIDDLE_PLATFORM.md`。
 
 ## 文件清单
 
@@ -15,6 +18,7 @@
 | `docs/strategy/MOAT.md` | 护城河与生存率分析:代码不是护城河,位置才是 | 认知层 |
 | `docs/strategy/JOB_HUNT.md` | 国企技术中心求职打法 + 一页纸提案框架 + 品牌内容路线 | 行动层 |
 | `docs/strategy/MARKET_FACTS.md` | 市场与商业化事实:竞品定价、国企 AI 市场量级、采购路径(每条带来源 URL) | 事实层 |
+| `docs/strategy/AI_MIDDLE_PLATFORM.md` | 企业 AI 中台定位与五层架构:一句话定位、用户与场景、五层架构(已有/待建映射)、代码对账、阶段划分、面试六点、风险与原则 | 定位层 |
 
 ## 关联文档
 
@@ -22,12 +26,13 @@
 - `docs/V2_PROPOSAL.md` — v2.0 深挖方向提案(拍板表)
 - `docs/ROADMAP.md` — 版本路线
 - `docs/MANUAL_TEST.md` — 证据包(人工测试路线,给所有主张提供实测数字)
+- `docs/strategy/AI_MIDDLE_PLATFORM.md` — 企业 AI 中台定位与五层架构(2026-08-05 拍板)
 
 ## 当前行动优先级(2026-08-02 拍板)
 
 1. **文档化脑子里的东西**(最紧急,不可复制资产)—— 本文件夹即第一笔
 2. **求职武器** —— 架构讲解 + Demo + 一页纸提案(框架见 JOB_HUNT.md)
-3. **品牌** —— 第一篇技术文章,署名绑定 ContextGate
+3. **品牌** —— 第一篇技术文章,署名绑定 NexusAI
 4. **证据包** —— MANUAL_TEST 全路线实测,给以上所有东西提供数字底气
 5. **Task 23 收尾** —— 保证仓库门禁干净,面试时敢打开仓库给人看
 

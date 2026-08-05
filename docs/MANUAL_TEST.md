@@ -191,14 +191,22 @@ uv run python scripts/audit_consistency.py   # 里程碑终检专用
 > 6.1–6.4 在哈希向量下无法产出语义验收证据。
 
 **面板构成:** 「缓存状态」卡(`GET /api/rag/status`:命中率 % + hit/miss + docs 数 + cache on/off 徽章)+
-「提问 / 搜索」卡(Ask / Search 按钮;回答区显示 `cache_hit` 徽章 + 延迟)。上传/初始化面板未暴露,走 curl。
+「上传 PDF」卡(`POST /api/rag/upload/pdf`,选真实 PDF 入库)+
+「提问 / 搜索」卡(Ask / Search 按钮;回答区显示 `cache_hit` 徽章 + 延迟)。
+`init/sample` 仍走 curl(面板未暴露)。
+
+> ⚠️ **扫描件 PDF(见 §13 GAP-10):** 2026-08-04 起上传会校验——整份无文本层 → 422 `RAG_002`
+> 「未提取到文本:扫描件或无文本层 PDF」,不再静默成功;响应含 `pages_extracted`(有文本页数)。
+> 自动 OCR 兜底未做;变通:逐页导出 png/jpg 走 `/api/rag/upload`(category=general)的 image 分支
+> (需 `uv sync --extra multimodal`)。
 
 ```bash
 KEY=你的seed_key
 BASE=localhost:8000/api/rag
-# 初始化示例知识库
+# 初始化示例知识库(curl)
 curl -s -X POST $BASE/init/sample -H "X-API-Key: $KEY"
-# 上传 PDF(注意: 必须是真实 PDF;.md 伪装会被 pypdf 解析失败。macOS 可用
+# 上传 PDF — 优先用 RAG 面板「上传 PDF」卡;curl 备用:
+# (必须是真实 PDF;.md 伪装会被 pypdf 解析失败。macOS 可用
 # `cupsfilter docs/COMPLIANCE.md > /tmp/c.pdf` 生成真实 PDF 再传)
 curl -s -X POST $BASE/upload/pdf -H "X-API-Key: $KEY" -F "file=@/tmp/c.pdf"
 ```
@@ -206,7 +214,7 @@ curl -s -X POST $BASE/upload/pdf -H "X-API-Key: $KEY" -F "file=@/tmp/c.pdf"
 | # | 验证点 | 操作 | 预期 |
 |---|--------|------|------|
 | 6.1 | init/sample [T28] | curl 上述 | 返回示例 chunks 数 >0(真实 embedding 入库) |
-| 6.2 | upload/pdf [T28] | curl 上述 | 文件入库,chunks 生成(必须真实 PDF) |
+| 6.2 | upload/pdf [T28] | **RAG 面板**选真实 PDF → 「上传到知识库」(或 curl 上述) | 成功文案 + status docs 增加;chunks 生成 |
 | 6.3 | search [T28] | 面板 **Search**,问「信息安全管理制度」 | top-k 返回;**top-1 须为 COMPLIANCE 相关**(语义硬验收) |
 | 6.4 | ask [T28] | 面板 **Ask** | 回答有引用来源;回答区显示 `cache_miss` 徽章 |
 | 6.5 | HyDE 开关 [T20][T28] | `RAG_HYDE_ENABLED=true` 重启后,同问句 top-1 命中比 false 更准(用长问句/术语变体验证) | 记录开关前后对比 |
@@ -350,6 +358,7 @@ RAG_QA_DEGRADE=1 RAG_QA_KEY=<key> ./scripts/rag_cache_qa.sh  # 含 redis 停启�
 | GAP-07 | 上传回显 | 多模态上传响应回显原始文件名(含 `../`) | Minor | ✅ 已修(改用 sanitize 后 safe_name) |
 | GAP-08 | LangFuse 观测 | harness 调不存在的 SDK 方法导致 usage/cost 未落库;`/chat/streaming` 无根 trace 产生孤儿 span | Important | ✅ 已修(2026-08-02:改 `update_current_observation` + streaming 根 observe;详见 examples/qa/LANGFUSE.md §6) |
 | GAP-09 | 测试 FE 缺口 | **(本轮起)** 面板发现的问题记这里:流程断点 / 信息缺失 / 概念错位(三类见 journeys README) | — | — |
+| GAP-10 | 扫描件 PDF | ① ~~上传静默"成功"~~ **已修(2026-08-04):** `load_from_pdf` 过滤空页,整份无文本 → 抛 `RAG_002`(422),响应带 pages_extracted/真实页数 ② **OCR 兜底仍未做**:无「无文本层 → 转图逐页 OCR」自动路径(变通:逐页导出 png/jpg 走 `/api/rag/upload` image 分支,需 multimodal) | Important | ②待修(建议:pymupdf 转图 → PaddleOCR 逐页 → 合并入库) |
 
 严重度分级:Critical(数据/安全/不可用)→ 立即修;Important(功能不符预期)→ 列表给用户审核;Minor(体验/文案)→ 直接修。
 修测试 FE 或后端时同步更新本表状态。
@@ -373,7 +382,7 @@ RAG_QA_DEGRADE=1 RAG_QA_KEY=<key> ./scripts/rag_cache_qa.sh  # 含 redis 停启�
 /chat, /chat/streaming          — LangGraph 管线(chat:write)     [FE: Chat 面板]
 /api/admin/*                    — api-keys / pending-requests / approve / llm-keys   [FE: Admin 面板]
 /api/audit/logs, /api/audit/export                              [FE: Audit 面板]
-/api/rag/*                      — status / init/sample / upload/pdf / ask / search / reset   [FE: RAG 面板;upload/init 走 curl]
+/api/rag/*                      — status / init/sample / upload/pdf / ask / search / reset   [FE: RAG 面板;upload/pdf 面板可传;init/sample 仍 curl]
 /api/files/upload               — 文件上传(内容头校验 + UUID 重命名)
 /intent/types, /intent/detect, /intent/analyze, /intent/batch, /intent/build_prompt   [无面板,curl]
 /agent/chat, /agent/memory/{uid}, /agent/tools, /agent/followup, /agent/history/{uid} [FE: Agent 面板]

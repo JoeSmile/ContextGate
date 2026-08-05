@@ -1,4 +1,4 @@
-# ContextGate — 开发指引
+# NexusAI — 开发指引
 
 > **任务状态:见 `tasks/README.md`。** Task 30 阶段 1 / 30b / 31 已归档；当前 V1.x 队列见 README。
 > **历史批次与验收标准:`tasks/archive/`(仅供追溯)。**
@@ -6,7 +6,7 @@
 
 ## 项目
 
-**ContextGate** — The Intelligent Gateway for LLM Context Management.
+**NexusAI** — The Intelligent Gateway for LLM Context Management.
 企业级 LLM 前置处理管线，支持认证、多租户、安全护栏、可观测、模型路由、缓存。
 
 - 包管理: `uv` (不用 pip)
