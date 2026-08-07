@@ -85,6 +85,11 @@ uv run python -c "from backend.core.prompt_service import get_prompt; print(get_
 - [ ] 后台整合独立 trace `memory-consolidation` + score（耗时/条数/成功率）
 - [ ] 抽取成本护栏就位：预筛触发率 + 预算挂钩（Task 32 租户级记忆写入预算）
 
+**剩余排期拍板（2026-08-07 · Joe · 选项 C）:**  
+先做 **语义检索 warm**（复用已有 `search_user_memories` / embedding，**不**新引 LangGraph PostgresStore）→ 再做 **写路径异步化**（Redis 队列 + pending/done；Redis 降级则同步兜底）→ **consolidation trace / 成本护栏另开一轮**。  
+现状事实：warm 写路径已 embed；管线 `UnifiedMemoryService.read` / `load_memory` 仍全量 KV，未接语义检索。LangFuse UI 人工确认 prompt 版本后置。  
+> 实现暂缓：有更优先事项插入后再回来执行本拍板。
+
 **验证命令:**
 ```bash
 uv run ruff check backend/
